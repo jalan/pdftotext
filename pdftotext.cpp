@@ -54,7 +54,6 @@ static struct PyModuleDef pdftotextmodule = {
 
 static void
 error_to_exception(const std::string &message, void*) {
-    printf(message.c_str());
     PyErr_SetString(PdftotextError, message.c_str());
 }
 
