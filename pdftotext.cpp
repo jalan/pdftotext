@@ -25,7 +25,8 @@ extract(PyObject* const self, PyObject* const args)
         return NULL; // PyErr_SetString already called in callback
     }
 
-    for (int i = 0; i < doc->pages(); i++) {
+    const int page_count = doc->pages();
+    for (int i = 0; i < page_count; i++) {
         page = doc->create_page(i);
         if (page == NULL) {
             return NULL; // PyErr_SetString already called in callback
