@@ -3,6 +3,9 @@
 #include <poppler/cpp/poppler-global.h>
 #include <poppler/cpp/poppler-page.h>
 
+#include <string>
+#include <vector>
+
 static PyObject* PdftotextError;
 
 static PyObject*
