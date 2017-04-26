@@ -1,5 +1,5 @@
-from distutils.core import Extension
-from distutils.core import setup
+from setuptools import Extension
+from setuptools import setup
 
 pdftotext_module = Extension(
     "pdftotext",
