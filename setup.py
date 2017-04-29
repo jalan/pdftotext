@@ -11,4 +11,5 @@ module = Extension(
 setup(
     name="pdftotext",
     ext_modules=[module],
+    test_suite="tests",
 )
