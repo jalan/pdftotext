@@ -18,15 +18,6 @@ static PyMemberDef PDF_members[] = {
     {NULL},  // Sentinel
 };
 
-static PyObject* PDF_new(PyTypeObject* type, PyObject*, PyObject*) {
-    PDF* self;
-    self = (PDF*)type->tp_alloc(type, 0);
-    if (self != NULL) {
-        self->page_count = 0;
-    }
-    return (PyObject*)self;
-}
-
 static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
     PyObject* arg;
     static char* kwlist[] = {(char*)"pdf_file", NULL};
@@ -109,8 +100,6 @@ static PyTypeObject pdftotext_PDFType = {
     0,                           // tp_descr_set
     0,                           // tp_dictoffset
     (initproc)PDF_init,          // tp_init
-    0,                           // tp_alloc
-    PDF_new,                     // tp_new
 };
 
 static PyObject* PdftotextError;
