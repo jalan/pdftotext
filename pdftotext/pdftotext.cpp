@@ -26,17 +26,20 @@ static PyMemberDef PDF_members[] = {
     {NULL},  // Sentinel
 };
 
+static void PDF_clear(PDF* self) {
+    self->page_count = 0;
+    delete self->doc;
+    self->doc = NULL;
+    Py_CLEAR(self->data);
+}
+
 static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
     PyObject* arg;
     Py_ssize_t len;
     char* buf;
     static char* kwlist[] = {(char*)"pdf_file", NULL};
 
-    // Clear everything
-    self->page_count = 0;
-    delete self->doc;
-    self->doc = NULL;
-    Py_CLEAR(self->data);
+    PDF_clear(self);
 
     // Read the data
     if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &arg)) {
@@ -70,6 +73,11 @@ static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
     return 0;
 }
 
+static void PDF_dealloc(PDF* self) {
+    PDF_clear(self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
+}
+
 static PyObject* PDF_read(PyObject* self, PyObject* args, PyObject* kwds) {
     int* page_number;
     static char* kwlist[] = {(char*)"page_number", NULL};
@@ -82,10 +90,6 @@ static PyObject* PDF_read(PyObject* self, PyObject* args, PyObject* kwds) {
 
 static PyObject* PDF_read_all(PyObject* self, PyObject*) {
     return PyUnicode_FromString("TODO: read the whole document");
-}
-
-static void PDF_dealloc(PDF* self) {
-    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyMethodDef PDF_methods[] = {
