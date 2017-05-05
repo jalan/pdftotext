@@ -6,16 +6,15 @@ import unittest
 import pkg_resources
 
 import pdftotext
+from tests import test_pdf_file
 
 
 class InitTest(unittest.TestCase):
     """Test using and abusing __init__."""
 
     def setUp(self):
-        pdf_path = pkg_resources.resource_filename("tests", "test.pdf")
-        with open(pdf_path, "rb") as pdf_file:
-            self.pdf_file = io.BytesIO(pdf_file.read())
-            self.another_pdf_file = io.BytesIO(self.pdf_file.getvalue())
+        self.pdf_file = io.BytesIO(test_pdf_file.getvalue())
+        self.another_pdf_file = io.BytesIO(test_pdf_file.getvalue())
 
     def test_double_init_success(self):
         pdf = pdftotext.PDF(self.pdf_file)

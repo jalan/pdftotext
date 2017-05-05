@@ -6,6 +6,7 @@ import unittest
 import pkg_resources
 
 import pdftotext
+from tests import test_pdf_file
 
 
 class BuildTest(unittest.TestCase):
@@ -22,9 +23,7 @@ class TypeTest(unittest.TestCase):
     """Verify types and method signatures."""
 
     def setUp(self):
-        pdf_path = pkg_resources.resource_filename("tests", "test.pdf")
-        with open(pdf_path, "rb") as pdf_file:
-            self.pdf_file = io.BytesIO(pdf_file.read())
+        self.pdf_file = io.BytesIO(test_pdf_file.getvalue())
 
     def test_pdf_page_count(self):
         pdf = pdftotext.PDF(self.pdf_file)
