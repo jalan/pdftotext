@@ -33,30 +33,25 @@ static void PDF_clear(PDF* self) {
     Py_CLEAR(self->data);
 }
 
-static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
+static int PDF_load_data(PDF* self, PyObject* args, PyObject* kwds) {
     PyObject* arg;
-    Py_ssize_t len;
-    char* buf;
     static char* kwlist[] = {(char*)"pdf_file", NULL};
 
-    PDF_clear(self);
-
-    // Read the data
     if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &arg)) {
-        // Exception already set
         return -1;
     }
     self->data = PyObject_CallMethod(arg, "read", NULL);
     if (self->data == NULL) {
-        // Exception already set
         return -1;
     }
+    return 0;
+}
 
-    // TODO: explicitly check for bytes type for a more helpful error message
+static int PDF_create_doc(PDF* self) {
+    Py_ssize_t len;
+    char* buf;
 
-    // Create the doc
     if (PyBytes_AsStringAndSize(self->data, &buf, &len) < 0) {
-        // Exception already set
         Py_CLEAR(self->data);
         return -1;
     }
@@ -65,11 +60,19 @@ static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
         PyErr_SetString(PdftotextError, "TODO: useful error message");
         Py_CLEAR(self->data);
         return -1;
-     }
+    }
+    return 0;
+}
 
-    // Set the page_count
+static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
+    PDF_clear(self);
+    if (PDF_load_data(self, args, kwds) < 0) {
+        return -1;
+    }
+    if (PDF_create_doc(self) < 0) {
+        return -1;
+    }
     self->page_count = self->doc->pages();
-
     return 0;
 }
 
