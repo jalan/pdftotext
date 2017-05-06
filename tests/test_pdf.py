@@ -3,8 +3,6 @@
 import io
 import unittest
 
-import pkg_resources
-
 import pdftotext
 from tests import test_pdf_file
 
