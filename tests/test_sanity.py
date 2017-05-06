@@ -36,7 +36,7 @@ class TypeTest(unittest.TestCase):
 
     def test_pdf_read_one_arg(self):
         pdf = pdftotext.PDF(self.pdf_file)
-        result = pdf.read(0)
+        result = pdf.read(1)
         self.assertIn("", result)
 
     def test_pdf_read_two_args(self):
@@ -51,7 +51,7 @@ class TypeTest(unittest.TestCase):
 
     def test_pdf_read_keyword_arg(self):
         pdf = pdftotext.PDF(self.pdf_file)
-        result = pdf.read(page_number=0)
+        result = pdf.read(page_number=1)
         self.assertIn("", result)
 
     def test_pdf_read_wrong_keyword_arg(self):
