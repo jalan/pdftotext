@@ -5,6 +5,9 @@
 #include <poppler/cpp/poppler-global.h>
 #include <poppler/cpp/poppler-page.h>
 
+#include <string>
+#include <vector>
+
 
 static PyObject* PdftotextError;
 
@@ -81,14 +84,28 @@ static void PDF_dealloc(PDF* self) {
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* PDF_read(PyObject* self, PyObject* args, PyObject* kwds) {
-    int* page_number;
+static PyObject* PDF_read(PDF* self, PyObject* args, PyObject* kwds) {
+    int page_number;
     static char* kwlist[] = {(char*)"page_number", NULL};
+    const poppler::page* page;
+    std::vector<char> page_utf8;
 
+    if (self->doc == NULL) {
+        return PyErr_Format(PdftotextError, "No document to read");
+    }
     if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &page_number)) {
         return NULL;
     }
-    return PyUnicode_FromString("TODO: read a single page");
+    if (page_number < 1 || page_number > self->page_count) {
+        return PyErr_Format(PdftotextError, "Invalid page number");
+    }
+    page = self->doc->create_page(page_number - 1);
+    if (page == NULL) {
+        return PyErr_Format(PdftotextError, "Poppler error creating page");
+    }
+    page_utf8 = page->text().to_utf8();
+    delete page;
+    return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
 }
 
 static PyObject* PDF_read_all(PyObject* self, PyObject*) {
