@@ -60,7 +60,7 @@ static int PDF_create_doc(PDF* self) {
     }
     self->doc = poppler::document::load_from_raw_data(buf, len);
     if (self->doc == NULL) {
-        PyErr_SetString(PdftotextError, "TODO: useful error message");
+        PyErr_SetString(PdftotextError, "Poppler error creating document");
         Py_CLEAR(self->data);
         return -1;
     }
@@ -97,7 +97,7 @@ static PyObject* PDF_read(PDF* self, PyObject* args, PyObject* kwds) {
         return NULL;
     }
     if (page_number < 1 || page_number > self->page_count) {
-        return PyErr_Format(PdftotextError, "Invalid page number");
+        return PyErr_Format(PdftotextError, "Invalid page number: %i", page_number);
     }
     page = self->doc->create_page(page_number - 1);
     if (page == NULL) {
@@ -149,7 +149,7 @@ static PyTypeObject pdftotext_PDFType = {
     0,                                         // tp_setattro
     0,                                         // tp_as_buffer
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,  // tp_flags
-    "TODO: docstring for PDF.",                // tp_doc
+    "PDF document.",                           // tp_doc
     0,                                         // tp_traverse
     0,                                         // tp_clear
     0,                                         // tp_richcompare
@@ -190,7 +190,7 @@ PyMODINIT_FUNC PyInit_pdftotext() {
     PyModule_AddObject(module, "PDF", (PyObject*)&pdftotext_PDFType);
 
     PdftotextError = PyErr_NewExceptionWithDoc(
-        "pdftotext.Error", "TODO: docstring for Error.", NULL, NULL);
+        "pdftotext.Error", "PDF error.", NULL, NULL);
     Py_INCREF(PdftotextError);
     PyModule_AddObject(module, "Error", PdftotextError);
 
