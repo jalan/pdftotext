@@ -6,22 +6,25 @@ import unittest
 import pdftotext
 from tests import abcde_pdf_file
 from tests import blank_pdf_file
+from tests import corrupt_page_file
+from tests import corrupt_pdf_file
 
 
 class InitTest(unittest.TestCase):
     """Test using and abusing __init__."""
 
     def setUp(self):
-        self.pdf_file = io.BytesIO(blank_pdf_file.getvalue())
-        self.another_pdf_file = io.BytesIO(blank_pdf_file.getvalue())
+        self.abcde_pdf_file = io.BytesIO(abcde_pdf_file.getvalue())
+        self.blank_pdf_file = io.BytesIO(blank_pdf_file.getvalue())
+        self.corrupt_pdf_file = io.BytesIO(corrupt_pdf_file.getvalue())
 
     def test_double_init_success(self):
-        pdf = pdftotext.PDF(self.pdf_file)
-        pdf.__init__(self.another_pdf_file)
+        pdf = pdftotext.PDF(self.abcde_pdf_file)
+        pdf.__init__(self.blank_pdf_file)
         self.assertEqual(pdf.page_count, 1)
 
     def test_double_init_failure(self):
-        pdf = pdftotext.PDF(self.pdf_file)
+        pdf = pdftotext.PDF(self.blank_pdf_file)
         with self.assertRaises(AttributeError):
             pdf.__init__("wrong")
 
@@ -34,6 +37,10 @@ class InitTest(unittest.TestCase):
         pdf_file = io.BytesIO(b"wrong")
         with self.assertRaises(pdftotext.Error):
             pdf = pdftotext.PDF(pdf_file)
+
+    def test_init_corrupt_pdf_file(self):
+        with self.assertRaises(pdftotext.Error):
+            pdf = pdftotext.PDF(self.corrupt_pdf_file)
 
     def test_no_init(self):
         class BrokenPDF(pdftotext.PDF):
@@ -49,6 +56,7 @@ class ReadTest(unittest.TestCase):
     def setUp(self):
         self.abcde_pdf_file = io.BytesIO(abcde_pdf_file.getvalue())
         self.blank_pdf_file = io.BytesIO(blank_pdf_file.getvalue())
+        self.corrupt_page_file = io.BytesIO(corrupt_page_file.getvalue())
 
     def test_read(self):
         pdf = pdftotext.PDF(self.abcde_pdf_file)
@@ -97,3 +105,8 @@ class ReadTest(unittest.TestCase):
         pdf = pdftotext.PDF(self.blank_pdf_file)
         with self.assertRaises(TypeError):
             pdf.read(wrong=0)
+
+    def test_read_corrupt_page(self):
+        pdf = pdftotext.PDF(self.corrupt_page_file)
+        with self.assertRaises(pdftotext.Error):
+            pdf.read(1)
