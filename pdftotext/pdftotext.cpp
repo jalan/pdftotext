@@ -173,6 +173,10 @@ static PyModuleDef pdftotextmodule = {
     "Simple PDF text extraction.",
 };
 
+static void do_nothing(const std::string& message, void*) {
+    // TODO: Maybe turn the message into a python warning.
+}
+
 PyMODINIT_FUNC PyInit_pdftotext() {
     PyObject* module;
 
@@ -193,6 +197,8 @@ PyMODINIT_FUNC PyInit_pdftotext() {
         "pdftotext.Error", "PDF error.", NULL, NULL);
     Py_INCREF(PdftotextError);
     PyModule_AddObject(module, "Error", PdftotextError);
+
+    poppler::set_debug_error_function(do_nothing, NULL);
 
     return module;
 }
