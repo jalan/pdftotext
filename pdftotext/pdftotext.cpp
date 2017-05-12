@@ -60,7 +60,7 @@ static int PDF_create_doc(PDF* self) {
     }
     self->doc = poppler::document::load_from_raw_data(buf, len);
     if (self->doc == NULL) {
-        PyErr_SetString(PdftotextError, "Poppler error creating document");
+        PyErr_Format(PdftotextError, "Poppler error creating document");
         Py_CLEAR(self->data);
         return -1;
     }
@@ -97,7 +97,8 @@ static PyObject* PDF_read(PDF* self, PyObject* args, PyObject* kwds) {
         return NULL;
     }
     if (page_number < 1 || page_number > self->page_count) {
-        return PyErr_Format(PdftotextError, "Invalid page number: %i", page_number);
+        return PyErr_Format(
+            PdftotextError, "Invalid page number: %i", page_number);
     }
     page = self->doc->create_page(page_number - 1);
     if (page == NULL) {
