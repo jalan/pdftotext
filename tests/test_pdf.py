@@ -139,3 +139,23 @@ class ReadAllTest(unittest.TestCase):
         pdf = pdftotext.PDF(self.two_page_file)
         with self.assertRaises(TypeError):
             pdf.read_all("wrong")
+
+
+class PageCountTest(unittest.TestCase):
+    """Test the page_count attribute."""
+
+    def setUp(self):
+        self.blank_pdf_file = io.BytesIO(blank_pdf_file.getvalue())
+        self.two_page_file = io.BytesIO(two_page_file.getvalue())
+
+    def test_page_count_type(self):
+        pdf = pdftotext.PDF(self.blank_pdf_file)
+        self.assertEqual(type(pdf.page_count), int)
+
+    def test_page_count_one(self):
+        pdf = pdftotext.PDF(self.blank_pdf_file)
+        self.assertEqual(pdf.page_count, 1)
+
+    def test_page_count_two(self):
+        pdf = pdftotext.PDF(self.two_page_file)
+        self.assertEqual(pdf.page_count, 2)
