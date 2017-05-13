@@ -109,8 +109,24 @@ static PyObject* PDF_read(PDF* self, PyObject* args, PyObject* kwds) {
     return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
 }
 
-static PyObject* PDF_read_all(PyObject* self, PyObject*) {
-    return PyUnicode_FromString("TODO: read the whole document");
+static PyObject* PDF_read_all(PDF* self) {
+    const poppler::page* page;
+    std::vector<char> page_utf8;
+    std::vector<char> doc_utf8;
+
+    if (self->doc == NULL) {
+        return PyErr_Format(PdftotextError, "No document to read");
+    }
+    for (int i = 0; i < self->page_count; i++) {
+        page = self->doc->create_page(i);
+        if (page == NULL) {
+            return PyErr_Format(PdftotextError, "Poppler error creating page");
+        }
+        page_utf8 = page->text().to_utf8();
+        delete page;
+        doc_utf8.insert(doc_utf8.end(), page_utf8.begin(), page_utf8.end());
+    }
+    return PyUnicode_DecodeUTF8(doc_utf8.data(), doc_utf8.size(), NULL);
 }
 
 static PyMethodDef PDF_methods[] = {
@@ -122,7 +138,7 @@ static PyMethodDef PDF_methods[] = {
     },
     {
         "read_all",
-        PDF_read_all,
+        (PyCFunction)PDF_read_all,
         METH_NOARGS,
         "Extract text from the entire document.",
     },

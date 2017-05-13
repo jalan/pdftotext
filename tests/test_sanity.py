@@ -26,13 +26,3 @@ class TypeTest(unittest.TestCase):
     def test_pdf_page_count(self):
         pdf = pdftotext.PDF(self.pdf_file)
         self.assertEqual(type(pdf.page_count), int)
-
-    def test_pdf_read_all_zero_args(self):
-        pdf = pdftotext.PDF(self.pdf_file)
-        result = pdf.read_all()
-        self.assertIn("", result)
-
-    def test_pdf_read_all_one_arg(self):
-        pdf = pdftotext.PDF(self.pdf_file)
-        with self.assertRaises(TypeError):
-            pdf.read_all(0)

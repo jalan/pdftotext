@@ -117,3 +117,25 @@ class ReadTest(unittest.TestCase):
         pdf = pdftotext.PDF(self.two_page_file)
         result = pdf.read(2)
         self.assertIn("two", result)
+
+
+class ReadAllTest(unittest.TestCase):
+    """Test the read_all method."""
+
+    def setUp(self):
+        self.two_page_file = io.BytesIO(two_page_file.getvalue())
+
+    def test_read_all_first_page(self):
+        pdf = pdftotext.PDF(self.two_page_file)
+        result = pdf.read_all()
+        self.assertIn("one", result)
+
+    def test_read_all_second_page(self):
+        pdf = pdftotext.PDF(self.two_page_file)
+        result = pdf.read_all()
+        self.assertIn("two", result)
+
+    def test_pdf_read_all_one_arg(self):
+        pdf = pdftotext.PDF(self.two_page_file)
+        with self.assertRaises(TypeError):
+            pdf.read_all("wrong")
