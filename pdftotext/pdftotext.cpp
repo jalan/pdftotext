@@ -190,9 +190,7 @@ static PyModuleDef pdftotextmodule = {
     "Simple PDF text extraction.",
 };
 
-static void do_nothing(const std::string& message, void*) {
-    // TODO: Maybe turn the message into a python warning.
-}
+static void do_nothing(const std::string&, void*) {}
 
 PyMODINIT_FUNC PyInit_pdftotext() {
     PyObject* module;
