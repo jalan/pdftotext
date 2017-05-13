@@ -1,14 +1,31 @@
 """Tests for the PDF class."""
 
 import io
+import pkg_resources
 import unittest
 
 import pdftotext
-from tests import abcde_pdf_file
-from tests import blank_pdf_file
-from tests import corrupt_page_file
-from tests import corrupt_pdf_file
-from tests import two_page_file
+
+
+abcde_pdf_path = pkg_resources.resource_filename("tests", "abcde.pdf")
+with open(abcde_pdf_path, "rb") as open_file:
+    abcde_pdf_file = io.BytesIO(open_file.read())
+
+blank_pdf_path = pkg_resources.resource_filename("tests", "blank.pdf")
+with open(blank_pdf_path, "rb") as open_file:
+    blank_pdf_file = io.BytesIO(open_file.read())
+
+corrupt_page_path = pkg_resources.resource_filename("tests", "corrupt_page.pdf")
+with open(corrupt_page_path, "rb") as open_file:
+    corrupt_page_file = io.BytesIO(open_file.read())
+
+corrupt_pdf_path = pkg_resources.resource_filename("tests", "corrupt.pdf")
+with open(corrupt_pdf_path, "rb") as open_file:
+    corrupt_pdf_file = io.BytesIO(open_file.read())
+
+two_page_path = pkg_resources.resource_filename("tests", "two_page.pdf")
+with open(two_page_path, "rb") as open_file:
+    two_page_file = io.BytesIO(open_file.read())
 
 
 class InitTest(unittest.TestCase):
