@@ -113,8 +113,8 @@ class ReadTest(unittest.TestCase):
             pdf.read(wrong=0)
 
     def test_read_corrupt_page(self):
-        pdf = pdftotext.PDF(get_file("corrupt_page.pdf"))
         with self.assertRaises(pdftotext.Error):
+            pdf = pdftotext.PDF(get_file("corrupt_page.pdf"))
             pdf.read(1)
 
     def test_read_page_two(self):
