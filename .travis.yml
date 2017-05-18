@@ -8,5 +8,5 @@ python:
   - "3.6"
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y libpoppler-cpp-dev
+  - sudo apt-get install -y libpoppler-cpp-dev pkg-config
 script: python setup.py test

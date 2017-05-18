@@ -190,7 +190,9 @@ static PyModuleDef pdftotextmodule = {
     "Simple PDF text extraction.",
 };
 
+#if POPPLER_CPP_AT_LEAST_0_30_0
 static void do_nothing(const std::string&, void*) {}
+#endif
 
 PyMODINIT_FUNC PyInit_pdftotext() {
     PyObject* module;
@@ -213,7 +215,9 @@ PyMODINIT_FUNC PyInit_pdftotext() {
     Py_INCREF(PdftotextError);
     PyModule_AddObject(module, "Error", PdftotextError);
 
+    #if POPPLER_CPP_AT_LEAST_0_30_0
     poppler::set_debug_error_function(do_nothing, NULL);
+    #endif
 
     return module;
 }
