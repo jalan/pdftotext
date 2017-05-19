@@ -149,7 +149,7 @@ static PyMethodDef PDF_methods[] = {
     {NULL},  // Sentinel
 };
 
-static PyTypeObject pdftotext_PDFType = {
+static PyTypeObject PDFType = {
     PyVarObject_HEAD_INIT(NULL, 0)
     "pdftotext.PDF",                           // tp_name
     sizeof(PDF),                               // tp_basicsize
@@ -201,8 +201,8 @@ static void do_nothing(const std::string&, void*) {}
 PyMODINIT_FUNC PyInit_pdftotext() {
     PyObject* module;
 
-    pdftotext_PDFType.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&pdftotext_PDFType) < 0) {
+    PDFType.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PDFType) < 0) {
         return NULL;
     }
 
@@ -211,8 +211,8 @@ PyMODINIT_FUNC PyInit_pdftotext() {
         return NULL;
     }
 
-    Py_INCREF(&pdftotext_PDFType);
-    PyModule_AddObject(module, "PDF", (PyObject*)&pdftotext_PDFType);
+    Py_INCREF(&PDFType);
+    PyModule_AddObject(module, "PDF", (PyObject*)&PDFType);
 
     PdftotextError = PyErr_NewExceptionWithDoc(
         "pdftotext.Error", "PDF error.", NULL, NULL);
