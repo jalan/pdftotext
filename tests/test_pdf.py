@@ -126,6 +126,11 @@ class ReadTest(unittest.TestCase):
 class ReadAllTest(unittest.TestCase):
     """Test the read_all method."""
 
+    def test_read_all_join(self):
+        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        result = pdf.read_all()
+        self.assertIn("\n\n", result)
+
     def test_read_all_first_page(self):
         pdf = pdftotext.PDF(get_file("two_page.pdf"))
         result = pdf.read_all()

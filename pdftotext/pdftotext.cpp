@@ -118,6 +118,10 @@ static PyObject* PDF_read_all(PDF* self) {
         return PyErr_Format(PdftotextError, "No document to read");
     }
     for (int i = 0; i < self->page_count; i++) {
+        if (i != 0) {
+            doc_utf8.push_back('\n');
+            doc_utf8.push_back('\n');
+        }
         page = self->doc->create_page(i);
         if (page == NULL) {
             return PyErr_Format(PdftotextError, "Poppler error creating page");
@@ -140,7 +144,7 @@ static PyMethodDef PDF_methods[] = {
         "read_all",
         (PyCFunction)PDF_read_all,
         METH_NOARGS,
-        "Extract text from the entire document.",
+        "Extract all text from the document, joining pages with \"\\n\\n\".",
     },
     {NULL},  // Sentinel
 };
