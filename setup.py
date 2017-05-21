@@ -32,6 +32,14 @@ module = Extension(
 
 setup(
     name="pdftotext",
+    version="0.0.0",
+    description="Simple PDF text extraction",
+    url="https://github.com/jalan/pdftotext",
+    author="Jason Alan Palmer",
+    license="MIT",
+    classifiers=[
+        "Programming Language :: Python :: 3",
+    ],
     ext_modules=[module],
     test_suite="tests",
 )
