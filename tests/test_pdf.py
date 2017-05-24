@@ -42,16 +42,16 @@ class InitTest(unittest.TestCase):
     def test_init_file_in_text_mode(self):
         text_file = io.StringIO("wrong")
         with self.assertRaises(TypeError):
-            pdf = pdftotext.PDF(text_file)
+            pdftotext.PDF(text_file)
 
     def test_init_invalid_pdf_file(self):
         pdf_file = io.BytesIO(b"wrong")
         with self.assertRaises(pdftotext.Error):
-            pdf = pdftotext.PDF(pdf_file)
+            pdftotext.PDF(pdf_file)
 
     def test_init_corrupt_pdf_file(self):
         with self.assertRaises(pdftotext.Error):
-            pdf = pdftotext.PDF(get_file("corrupt.pdf"))
+            pdftotext.PDF(get_file("corrupt.pdf"))
 
     def test_no_init(self):
         class BrokenPDF(pdftotext.PDF):
