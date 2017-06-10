@@ -88,11 +88,22 @@ static void PDF_dealloc(PDF* self) {
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
+static PyObject* PDF_read_page(PDF* self, int page_number) {
+    const poppler::page* page;
+    std::vector<char> page_utf8;
+
+    page = self->doc->create_page(page_number - 1);
+    if (page == NULL) {
+        return PyErr_Format(PdftotextError, "Poppler error creating page");
+    }
+    page_utf8 = page->text().to_utf8();
+    delete page;
+    return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
+}
+
 static PyObject* PDF_read(PDF* self, PyObject* args, PyObject* kwds) {
     int page_number;
     static char* kwlist[] = {(char*)"page_number", NULL};
-    const poppler::page* page;
-    std::vector<char> page_utf8;
 
     if (self->doc == NULL) {
         return PyErr_Format(PdftotextError, "No document to read");
@@ -104,13 +115,7 @@ static PyObject* PDF_read(PDF* self, PyObject* args, PyObject* kwds) {
         return PyErr_Format(
             PdftotextError, "Invalid page number: %i", page_number);
     }
-    page = self->doc->create_page(page_number - 1);
-    if (page == NULL) {
-        return PyErr_Format(PdftotextError, "Poppler error creating page");
-    }
-    page_utf8 = page->text().to_utf8();
-    delete page;
-    return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
+    return PDF_read_page(self, page_number);
 }
 
 static PyObject* PDF_read_all(PDF* self) {
