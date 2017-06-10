@@ -1,5 +1,7 @@
 # pdftotext
 
+[![Build Status](https://travis-ci.org/jalan/pdftotext.svg?branch=master)](https://travis-ci.org/jalan/pdftotext)
+
 Simple PDF text extraction
 
 ```python
