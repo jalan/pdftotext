@@ -39,6 +39,7 @@ setup(
     author_email="jalanpalmer@gmail.com",
     license="MIT",
     classifiers=[
+        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
     ],
     ext_modules=[module],

@@ -43,7 +43,11 @@ static int PDF_load_data(PDF* self, PyObject* args, PyObject* kwds) {
     if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &arg)) {
         return -1;
     }
+    #if PY_MAJOR_VERSION >= 3
     self->data = PyObject_CallMethod(arg, "read", NULL);
+    #else
+    self->data = PyObject_CallMethod(arg, (char*)"read", NULL);
+    #endif
     if (self->data == NULL) {
         return -1;
     }
@@ -188,15 +192,16 @@ static PyTypeObject PDFType = {
     (initproc)PDF_init,                        // tp_init
 };
 
+#if POPPLER_CPP_AT_LEAST_0_30_0
+static void do_nothing(const std::string&, void*) {}
+#endif
+
+#if PY_MAJOR_VERSION >= 3
 static PyModuleDef pdftotextmodule = {
     PyModuleDef_HEAD_INIT,
     "pdftotext",
     "Simple PDF text extraction.",
 };
-
-#if POPPLER_CPP_AT_LEAST_0_30_0
-static void do_nothing(const std::string&, void*) {}
-#endif
 
 PyMODINIT_FUNC PyInit_pdftotext() {
     PyObject* module;
@@ -225,3 +230,35 @@ PyMODINIT_FUNC PyInit_pdftotext() {
 
     return module;
 }
+#else
+static PyMethodDef module_methods[] = {
+    {NULL},  // Sentinel
+};
+
+PyMODINIT_FUNC initpdftotext() {
+    PyObject* module;
+
+    PDFType.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PDFType) < 0) {
+        return;
+    }
+
+    module = Py_InitModule3(
+        "pdftotext", module_methods, "Simple PDF text extraction.");
+    if (module == NULL) {
+        return;
+    }
+
+    Py_INCREF(&PDFType);
+    PyModule_AddObject(module, "PDF", (PyObject*)&PDFType);
+
+    PdftotextError = PyErr_NewExceptionWithDoc(
+        (char*)"pdftotext.Error", (char*)"PDF error.", NULL, NULL);
+    Py_INCREF(PdftotextError);
+    PyModule_AddObject(module, "Error", PdftotextError);
+
+    #if POPPLER_CPP_AT_LEAST_0_30_0
+    poppler::set_debug_error_function(do_nothing, NULL);
+    #endif
+}
+#endif
