@@ -14,6 +14,7 @@ static PyObject* PdftotextError;
 typedef struct {
     PyObject_HEAD
     int page_count;
+    int page_number;
     PyObject* data;
     poppler::document* doc;
 } PDF;
@@ -31,6 +32,7 @@ static PyMemberDef PDF_members[] = {
 
 static void PDF_clear(PDF* self) {
     self->page_count = 0;
+    self->page_number = 0;
     delete self->doc;
     self->doc = NULL;
     Py_CLEAR(self->data);
@@ -80,6 +82,7 @@ static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
         return -1;
     }
     self->page_count = self->doc->pages();
+    self->page_number = 0;
     return 0;
 }
 
@@ -142,6 +145,14 @@ static PyObject* PDF_read_all(PDF* self) {
     return PyUnicode_DecodeUTF8(doc_utf8.data(), doc_utf8.size(), NULL);
 }
 
+static PyObject* PDF_next(PDF* self) {
+    if (self->page_number >= self->page_count) {
+        return NULL;
+    }
+    self->page_number++;
+    return PDF_read_page(self, self->page_number);
+}
+
 static PyMethodDef PDF_methods[] = {
     {
         "read",
@@ -184,8 +195,8 @@ static PyTypeObject PDFType = {
     0,                                         // tp_clear
     0,                                         // tp_richcompare
     0,                                         // tp_weaklistoffset
-    0,                                         // tp_iter
-    0,                                         // tp_iternext
+    PyObject_SelfIter,                         // tp_iter
+    (iternextfunc)PDF_next,                    // tp_iternext
     PDF_methods,                               // tp_methods
     PDF_members,                               // tp_members
     0,                                         // tp_getset

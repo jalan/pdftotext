@@ -161,3 +161,36 @@ class PageCountTest(unittest.TestCase):
     def test_page_count_two(self):
         pdf = pdftotext.PDF(get_file("two_page.pdf"))
         self.assertEqual(pdf.page_count, 2)
+
+
+class IterationTest(unittest.TestCase):
+    """Test iterating over pages."""
+
+    def test_list_length(self):
+        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        result = list(pdf)
+        self.assertEqual(len(result), 2)
+
+    def test_list_first_element(self):
+        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        result = list(pdf)
+        self.assertIn("one", result[0])
+
+    def test_list_second_element(self):
+        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        result = list(pdf)
+        self.assertIn("two", result[1])
+
+    def test_stop_iteration(self):
+        pdf = pdftotext.PDF(get_file("blank.pdf"))
+        with self.assertRaises(StopIteration):
+            next(pdf)
+            next(pdf)
+
+    def test_for_loop(self):
+        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        result = ""
+        for page in pdf:
+            result = result + page
+        self.assertIn("one", result)
+        self.assertIn("two", result)
