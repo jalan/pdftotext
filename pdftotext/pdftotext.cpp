@@ -141,6 +141,9 @@ static PyObject* PDF_read_all(PDF* self) {
         page_utf8 = page->text().to_utf8();
         delete page;
         doc_utf8.insert(doc_utf8.end(), page_utf8.begin(), page_utf8.end());
+        if (PyErr_CheckSignals() < 0) {
+            return NULL;
+        }
     }
     return PyUnicode_DecodeUTF8(doc_utf8.data(), doc_utf8.size(), NULL);
 }
