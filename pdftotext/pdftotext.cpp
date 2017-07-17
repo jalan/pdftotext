@@ -14,25 +14,24 @@ static PyObject* PdftotextError;
 typedef struct {
     PyObject_HEAD
     int page_count;
-    int page_number;
     PyObject* data;
     poppler::document* doc;
 } PDF;
 
+// TODO: deprecated
 static PyMemberDef PDF_members[] = {
     {
         (char*)"page_count",
         T_INT,
         offsetof(PDF, page_count),
         READONLY,
-        (char*)"Page count.",
+        (char*)"Deprecated--instead of p.page_count, use len(p).",
     },
     {NULL},  // Sentinel
 };
 
 static void PDF_clear(PDF* self) {
     self->page_count = 0;
-    self->page_number = 0;
     delete self->doc;
     self->doc = NULL;
     Py_CLEAR(self->data);
@@ -82,7 +81,6 @@ static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
         return -1;
     }
     self->page_count = self->doc->pages();
-    self->page_number = 0;
     return 0;
 }
 
@@ -95,7 +93,7 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
     const poppler::page* page;
     std::vector<char> page_utf8;
 
-    page = self->doc->create_page(page_number - 1);
+    page = self->doc->create_page(page_number);
     if (page == NULL) {
         return PyErr_Format(PdftotextError, "Poppler error creating page");
     }
@@ -104,6 +102,7 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
     return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
 }
 
+// TODO: deprecated
 static PyObject* PDF_read(PDF* self, PyObject* args, PyObject* kwds) {
     int page_number;
     static char* kwlist[] = {(char*)"page_number", NULL};
@@ -118,9 +117,10 @@ static PyObject* PDF_read(PDF* self, PyObject* args, PyObject* kwds) {
         return PyErr_Format(
             PdftotextError, "Invalid page number: %i", page_number);
     }
-    return PDF_read_page(self, page_number);
+    return PDF_read_page(self, page_number - 1);
 }
 
+// TODO: deprecated
 static PyObject* PDF_read_all(PDF* self) {
     const poppler::page* page;
     std::vector<char> page_utf8;
@@ -148,28 +148,41 @@ static PyObject* PDF_read_all(PDF* self) {
     return PyUnicode_DecodeUTF8(doc_utf8.data(), doc_utf8.size(), NULL);
 }
 
-static PyObject* PDF_next(PDF* self) {
-    if (self->page_number >= self->page_count) {
-        return NULL;
-    }
-    self->page_number++;
-    return PDF_read_page(self, self->page_number);
-}
-
 static PyMethodDef PDF_methods[] = {
     {
         "read",
         (PyCFunction)PDF_read,
         METH_VARARGS | METH_KEYWORDS,
-        "Extract text from the given page number.",
+        "Deprecated--instead of p.read(1), use p[0].",
     },
     {
         "read_all",
         (PyCFunction)PDF_read_all,
         METH_NOARGS,
-        "Extract all text from the document, joining pages with \"\\n\\n\".",
+        "Deprecated--instead of p.read_all(), use \"\\n\\n\".join(p).",
     },
     {NULL},  // Sentinel
+};
+
+static Py_ssize_t PDF_len(PyObject* obj) {
+    PDF* self = (PDF*)obj;
+    return self->page_count;
+}
+
+static PyObject* PDF_getitem(PyObject* obj, Py_ssize_t i) {
+    PDF* self = (PDF*)obj;
+
+    if (i < 0 || i >= self->page_count) {
+        return PyErr_Format(PyExc_IndexError, "Index out of range");
+    }
+    return PDF_read_page(self, i);
+}
+
+static PySequenceMethods PDF_sequence_methods = {
+    PDF_len,      // sq_length (__len__)
+    0,            // sq_concat
+    0,            // sq_repeat
+    PDF_getitem,  // sq_item (__getitem__)
 };
 
 static PyTypeObject PDFType = {
@@ -184,7 +197,7 @@ static PyTypeObject PDFType = {
     0,                                         // tp_reserved
     0,                                         // tp_repr
     0,                                         // tp_as_number
-    0,                                         // tp_as_sequence
+    &PDF_sequence_methods,                     // tp_as_sequence
     0,                                         // tp_as_mapping
     0,                                         // tp_hash
     0,                                         // tp_call
@@ -198,8 +211,8 @@ static PyTypeObject PDFType = {
     0,                                         // tp_clear
     0,                                         // tp_richcompare
     0,                                         // tp_weaklistoffset
-    PyObject_SelfIter,                         // tp_iter
-    (iternextfunc)PDF_next,                    // tp_iternext
+    0,                                         // tp_iter
+    0,                                         // tp_iternext
     PDF_methods,                               // tp_methods
     PDF_members,                               // tp_members
     0,                                         // tp_getset

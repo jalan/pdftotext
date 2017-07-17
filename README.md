@@ -10,15 +10,19 @@ import pdftotext
 with open("lorem_ipsum.pdf", "rb") as f:
     pdf = pdftotext.PDF(f)
 
+# How many pages?
+print(len(pdf))
+
 # Iterate over all the pages
 for page in pdf:
     print(page)
 
-# Just read the second page
-print(pdf.read(2))
+# Read some individual pages
+print(pdf[0])
+print(pdf[1])
 
-# Or read all the text at once
-print(pdf.read_all())
+# Read all the text into one string
+print("\n\n".join(pdf))
 ```
 
 

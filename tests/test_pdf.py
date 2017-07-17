@@ -32,7 +32,7 @@ class InitTest(unittest.TestCase):
     def test_double_init_success(self):
         pdf = pdftotext.PDF(get_file("abcde.pdf"))
         pdf.__init__(get_file("blank.pdf"))
-        self.assertEqual(pdf.page_count, 1)
+        self.assertEqual(len(pdf), 1)
 
     def test_double_init_failure(self):
         pdf = pdftotext.PDF(get_file("blank.pdf"))
@@ -58,7 +58,7 @@ class InitTest(unittest.TestCase):
             def __init__(self):
                 pass
         pdf = BrokenPDF()
-        self.assertEqual(pdf.page_count, 0)
+        self.assertEqual(len(pdf), 0)
 
 
 class ReadTest(unittest.TestCase):
@@ -123,6 +123,43 @@ class ReadTest(unittest.TestCase):
         self.assertIn("two", result)
 
 
+class GetItemTest(unittest.TestCase):
+    """Test the __getitem__ method."""
+
+    def test_read(self):
+        pdf = pdftotext.PDF(get_file("abcde.pdf"))
+        result = pdf[0]
+        self.assertIn("abcde", result)
+
+    def test_no_doc_to_read(self):
+        class BrokenPDF(pdftotext.PDF):
+            def __init__(self):
+                pass
+        pdf = BrokenPDF()
+        with self.assertRaises(IndexError):
+            pdf[0]
+
+    def test_pdf_read_invalid_page_number(self):
+        pdf = pdftotext.PDF(get_file("blank.pdf"))
+        with self.assertRaises(IndexError):
+            pdf[100]
+
+    def test_pdf_read_wrong_arg_type(self):
+        pdf = pdftotext.PDF(get_file("blank.pdf"))
+        with self.assertRaises(TypeError):
+            pdf["wrong"]
+
+    def test_read_corrupt_page(self):
+        with self.assertRaises((pdftotext.Error, IndexError)):
+            pdf = pdftotext.PDF(get_file("corrupt_page.pdf"))
+            pdf[0]
+
+    def test_read_page_two(self):
+        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        result = pdf[1]
+        self.assertIn("two", result)
+
+
 class ReadAllTest(unittest.TestCase):
     """Test the read_all method."""
 
@@ -163,29 +200,48 @@ class PageCountTest(unittest.TestCase):
         self.assertEqual(pdf.page_count, 2)
 
 
-class IterationTest(unittest.TestCase):
+class LengthTest(unittest.TestCase):
+    """Test the __len__ method."""
+
+    def test_length_one(self):
+        pdf = pdftotext.PDF(get_file("blank.pdf"))
+        self.assertEqual(len(pdf), 1)
+
+    def test_length_two(self):
+        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        self.assertEqual(len(pdf), 2)
+
+    def test_length_no_doc(self):
+        class BrokenPDF(pdftotext.PDF):
+            def __init__(self):
+                pass
+        pdf = BrokenPDF()
+        self.assertEqual(len(pdf), 0)
+
+
+class ListTest(unittest.TestCase):
     """Test iterating over pages."""
 
     def test_list_length(self):
         pdf = pdftotext.PDF(get_file("two_page.pdf"))
-        result = list(pdf)
-        self.assertEqual(len(result), 2)
+        self.assertEqual(len(pdf), 2)
 
     def test_list_first_element(self):
         pdf = pdftotext.PDF(get_file("two_page.pdf"))
-        result = list(pdf)
-        self.assertIn("one", result[0])
+        self.assertIn("one", pdf[0])
 
     def test_list_second_element(self):
         pdf = pdftotext.PDF(get_file("two_page.pdf"))
-        result = list(pdf)
-        self.assertIn("two", result[1])
+        self.assertIn("two", pdf[1])
 
-    def test_stop_iteration(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        with self.assertRaises(StopIteration):
-            next(pdf)
-            next(pdf)
+    def test_list_invalid_element(self):
+        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        with self.assertRaises(IndexError):
+            pdf[2]
+
+    def test_list_last_element(self):
+        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        self.assertIn("two", pdf[-1])
 
     def test_for_loop(self):
         pdf = pdftotext.PDF(get_file("two_page.pdf"))
