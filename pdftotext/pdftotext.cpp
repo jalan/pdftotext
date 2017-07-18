@@ -18,18 +18,6 @@ typedef struct {
     poppler::document* doc;
 } PDF;
 
-// TODO: deprecated
-static PyMemberDef PDF_members[] = {
-    {
-        (char*)"page_count",
-        T_INT,
-        offsetof(PDF, page_count),
-        READONLY,
-        (char*)"Deprecated--instead of p.page_count, use len(p).",
-    },
-    {NULL},  // Sentinel
-};
-
 static void PDF_clear(PDF* self) {
     self->page_count = 0;
     delete self->doc;
@@ -152,7 +140,7 @@ static PyTypeObject PDFType = {
     0,                                         // tp_iter
     0,                                         // tp_iternext
     0,                                         // tp_methods
-    PDF_members,                               // tp_members
+    0,                                         // tp_members
     0,                                         // tp_getset
     0,                                         // tp_base
     0,                                         // tp_dict

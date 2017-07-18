@@ -98,22 +98,6 @@ class GetItemTest(unittest.TestCase):
         self.assertIn("two", result)
 
 
-class PageCountTest(unittest.TestCase):
-    """Test the page_count attribute."""
-
-    def test_page_count_type(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        self.assertEqual(type(pdf.page_count), int)
-
-    def test_page_count_one(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        self.assertEqual(pdf.page_count, 1)
-
-    def test_page_count_two(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
-        self.assertEqual(pdf.page_count, 2)
-
-
 class LengthTest(unittest.TestCase):
     """Test the __len__ method."""
 
