@@ -61,68 +61,6 @@ class InitTest(unittest.TestCase):
         self.assertEqual(len(pdf), 0)
 
 
-class ReadTest(unittest.TestCase):
-    """Test the read method."""
-
-    def test_read(self):
-        pdf = pdftotext.PDF(get_file("abcde.pdf"))
-        result = pdf.read(page_number=1)
-        self.assertIn("abcde", result)
-
-    def test_no_doc_to_read(self):
-        class BrokenPDF(pdftotext.PDF):
-            def __init__(self):
-                pass
-        pdf = BrokenPDF()
-        with self.assertRaises(pdftotext.Error):
-            pdf.read(1)
-
-    def test_pdf_read_invalid_page_number(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        with self.assertRaises(pdftotext.Error):
-            pdf.read(100)
-
-    def test_pdf_read_zero_args(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        with self.assertRaises(TypeError):
-            pdf.read()
-
-    def test_pdf_read_one_arg(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        result = pdf.read(1)
-        self.assertIn("", result)
-
-    def test_pdf_read_two_args(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        with self.assertRaises(TypeError):
-            pdf.read(0, 1)
-
-    def test_pdf_read_wrong_arg_type(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        with self.assertRaises(TypeError):
-            pdf.read("wrong")
-
-    def test_pdf_read_keyword_arg(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        result = pdf.read(page_number=1)
-        self.assertIn("", result)
-
-    def test_pdf_read_wrong_keyword_arg(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        with self.assertRaises(TypeError):
-            pdf.read(wrong=0)
-
-    def test_read_corrupt_page(self):
-        with self.assertRaises(pdftotext.Error):
-            pdf = pdftotext.PDF(get_file("corrupt_page.pdf"))
-            pdf.read(1)
-
-    def test_read_page_two(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
-        result = pdf.read(2)
-        self.assertIn("two", result)
-
-
 class GetItemTest(unittest.TestCase):
     """Test the __getitem__ method."""
 

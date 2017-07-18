@@ -103,24 +103,6 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
 }
 
 // TODO: deprecated
-static PyObject* PDF_read(PDF* self, PyObject* args, PyObject* kwds) {
-    int page_number;
-    static char* kwlist[] = {(char*)"page_number", NULL};
-
-    if (self->doc == NULL) {
-        return PyErr_Format(PdftotextError, "No document to read");
-    }
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &page_number)) {
-        return NULL;
-    }
-    if (page_number < 1 || page_number > self->page_count) {
-        return PyErr_Format(
-            PdftotextError, "Invalid page number: %i", page_number);
-    }
-    return PDF_read_page(self, page_number - 1);
-}
-
-// TODO: deprecated
 static PyObject* PDF_read_all(PDF* self) {
     const poppler::page* page;
     std::vector<char> page_utf8;
@@ -149,12 +131,6 @@ static PyObject* PDF_read_all(PDF* self) {
 }
 
 static PyMethodDef PDF_methods[] = {
-    {
-        "read",
-        (PyCFunction)PDF_read,
-        METH_VARARGS | METH_KEYWORDS,
-        "Deprecated--instead of p.read(1), use p[0].",
-    },
     {
         "read_all",
         (PyCFunction)PDF_read_all,
