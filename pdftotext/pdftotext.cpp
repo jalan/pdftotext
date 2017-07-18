@@ -102,44 +102,6 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
     return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
 }
 
-// TODO: deprecated
-static PyObject* PDF_read_all(PDF* self) {
-    const poppler::page* page;
-    std::vector<char> page_utf8;
-    std::vector<char> doc_utf8;
-
-    if (self->doc == NULL) {
-        return PyErr_Format(PdftotextError, "No document to read");
-    }
-    for (int i = 0; i < self->page_count; i++) {
-        if (i != 0) {
-            doc_utf8.push_back('\n');
-            doc_utf8.push_back('\n');
-        }
-        page = self->doc->create_page(i);
-        if (page == NULL) {
-            return PyErr_Format(PdftotextError, "Poppler error creating page");
-        }
-        page_utf8 = page->text().to_utf8();
-        delete page;
-        doc_utf8.insert(doc_utf8.end(), page_utf8.begin(), page_utf8.end());
-        if (PyErr_CheckSignals() < 0) {
-            return NULL;
-        }
-    }
-    return PyUnicode_DecodeUTF8(doc_utf8.data(), doc_utf8.size(), NULL);
-}
-
-static PyMethodDef PDF_methods[] = {
-    {
-        "read_all",
-        (PyCFunction)PDF_read_all,
-        METH_NOARGS,
-        "Deprecated--instead of p.read_all(), use \"\\n\\n\".join(p).",
-    },
-    {NULL},  // Sentinel
-};
-
 static Py_ssize_t PDF_len(PyObject* obj) {
     PDF* self = (PDF*)obj;
     return self->page_count;
@@ -189,7 +151,7 @@ static PyTypeObject PDFType = {
     0,                                         // tp_weaklistoffset
     0,                                         // tp_iter
     0,                                         // tp_iternext
-    PDF_methods,                               // tp_methods
+    0,                                         // tp_methods
     PDF_members,                               // tp_members
     0,                                         // tp_getset
     0,                                         // tp_base

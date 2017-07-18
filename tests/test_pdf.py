@@ -98,30 +98,6 @@ class GetItemTest(unittest.TestCase):
         self.assertIn("two", result)
 
 
-class ReadAllTest(unittest.TestCase):
-    """Test the read_all method."""
-
-    def test_read_all_join(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
-        result = pdf.read_all()
-        self.assertIn("\n\n", result)
-
-    def test_read_all_first_page(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
-        result = pdf.read_all()
-        self.assertIn("one", result)
-
-    def test_read_all_second_page(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
-        result = pdf.read_all()
-        self.assertIn("two", result)
-
-    def test_pdf_read_all_one_arg(self):
-        pdf = pdftotext.PDF(get_file("blank.pdf"))
-        with self.assertRaises(TypeError):
-            pdf.read_all("wrong")
-
-
 class PageCountTest(unittest.TestCase):
     """Test the page_count attribute."""
 
