@@ -48,13 +48,11 @@ static int PDF_create_doc(PDF* self) {
     char* buf;
 
     if (PyBytes_AsStringAndSize(self->data, &buf, &len) < 0) {
-        Py_CLEAR(self->data);
         return -1;
     }
     self->doc = poppler::document::load_from_raw_data(buf, len);
     if (self->doc == NULL) {
         PyErr_Format(PdftotextError, "Poppler error creating document");
-        Py_CLEAR(self->data);
         return -1;
     }
     return 0;
@@ -66,6 +64,7 @@ static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
         return -1;
     }
     if (PDF_create_doc(self) < 0) {
+        Py_CLEAR(self->data);
         return -1;
     }
     self->page_count = self->doc->pages();
