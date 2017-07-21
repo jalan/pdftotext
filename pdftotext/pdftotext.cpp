@@ -25,17 +25,11 @@ static void PDF_clear(PDF* self) {
     Py_CLEAR(self->data);
 }
 
-static int PDF_load_data(PDF* self, PyObject* args, PyObject* kwds) {
-    PyObject* arg;
-    static char* kwlist[] = {(char*)"pdf_file", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &arg)) {
-        return -1;
-    }
+static int PDF_load_data(PDF* self, PyObject* file) {
     #if PY_MAJOR_VERSION >= 3
-    self->data = PyObject_CallMethod(arg, "read", NULL);
+    self->data = PyObject_CallMethod(file, "read", NULL);
     #else
-    self->data = PyObject_CallMethod(arg, (char*)"read", NULL);
+    self->data = PyObject_CallMethod(file, (char*)"read", NULL);
     #endif
     if (self->data == NULL) {
         return -1;
@@ -58,17 +52,40 @@ static int PDF_create_doc(PDF* self) {
     return 0;
 }
 
-static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
-    PDF_clear(self);
-    if (PDF_load_data(self, args, kwds) < 0) {
+static int PDF_unlock(PDF* self, char* password) {
+    if (self->doc->unlock(std::string(password), std::string(password))) {
+        PyErr_Format(PdftotextError, "Failed to unlock document");
         return -1;
+    }
+    return 0;
+}
+
+static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
+    PyObject* pdf_file;
+    char* password = (char*)"";
+    static char* kwlist[] = {(char*)"pdf_file", (char*)"password", NULL};
+
+    PDF_clear(self);
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|s", kwlist, &pdf_file, &password)) {
+        goto error;
+    }
+    if (PDF_load_data(self, pdf_file) < 0) {
+        goto error;
     }
     if (PDF_create_doc(self) < 0) {
-        Py_CLEAR(self->data);
-        return -1;
+        goto error;
     }
+    if (PDF_unlock(self, password) < 0) {
+        goto error;
+    }
+
     self->page_count = self->doc->pages();
     return 0;
+
+error:
+    PDF_clear(self);
+    return -1;
 }
 
 static void PDF_dealloc(PDF* self) {
@@ -112,41 +129,41 @@ static PySequenceMethods PDF_sequence_methods = {
 
 static PyTypeObject PDFType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "pdftotext.PDF",                           // tp_name
-    sizeof(PDF),                               // tp_basicsize
-    0,                                         // tp_itemsize
-    (destructor)PDF_dealloc,                   // tp_dealloc
-    0,                                         // tp_print
-    0,                                         // tp_getattr
-    0,                                         // tp_setattr
-    0,                                         // tp_reserved
-    0,                                         // tp_repr
-    0,                                         // tp_as_number
-    &PDF_sequence_methods,                     // tp_as_sequence
-    0,                                         // tp_as_mapping
-    0,                                         // tp_hash
-    0,                                         // tp_call
-    0,                                         // tp_str
-    0,                                         // tp_getattro
-    0,                                         // tp_setattro
-    0,                                         // tp_as_buffer
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,  // tp_flags
-    "PDF document.",                           // tp_doc
-    0,                                         // tp_traverse
-    0,                                         // tp_clear
-    0,                                         // tp_richcompare
-    0,                                         // tp_weaklistoffset
-    0,                                         // tp_iter
-    0,                                         // tp_iternext
-    0,                                         // tp_methods
-    0,                                         // tp_members
-    0,                                         // tp_getset
-    0,                                         // tp_base
-    0,                                         // tp_dict
-    0,                                         // tp_descr_get
-    0,                                         // tp_descr_set
-    0,                                         // tp_dictoffset
-    (initproc)PDF_init,                        // tp_init
+    "pdftotext.PDF",                                   // tp_name
+    sizeof(PDF),                                       // tp_basicsize
+    0,                                                 // tp_itemsize
+    (destructor)PDF_dealloc,                           // tp_dealloc
+    0,                                                 // tp_print
+    0,                                                 // tp_getattr
+    0,                                                 // tp_setattr
+    0,                                                 // tp_reserved
+    0,                                                 // tp_repr
+    0,                                                 // tp_as_number
+    &PDF_sequence_methods,                             // tp_as_sequence
+    0,                                                 // tp_as_mapping
+    0,                                                 // tp_hash
+    0,                                                 // tp_call
+    0,                                                 // tp_str
+    0,                                                 // tp_getattro
+    0,                                                 // tp_setattro
+    0,                                                 // tp_as_buffer
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,          // tp_flags
+    "PDF(pdf_file, password="") -> new PDF document",  // tp_doc
+    0,                                                 // tp_traverse
+    0,                                                 // tp_clear
+    0,                                                 // tp_richcompare
+    0,                                                 // tp_weaklistoffset
+    0,                                                 // tp_iter
+    0,                                                 // tp_iternext
+    0,                                                 // tp_methods
+    0,                                                 // tp_members
+    0,                                                 // tp_getset
+    0,                                                 // tp_base
+    0,                                                 // tp_dict
+    0,                                                 // tp_descr_get
+    0,                                                 // tp_descr_set
+    0,                                                 // tp_dictoffset
+    (initproc)PDF_init,                                // tp_init
 };
 
 #if POPPLER_CPP_AT_LEAST_0_30_0
