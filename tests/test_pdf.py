@@ -10,9 +10,11 @@ import pdftotext
 file_names = [
     "abcde.pdf",
     "blank.pdf",
-    "corrupt_page.pdf",
+    "both_passwords.pdf",
     "corrupt.pdf",
+    "corrupt_page.pdf",
     "two_page.pdf",
+    "user_password.pdf",
 ]
 test_files = {}
 for file_name in file_names:
@@ -59,6 +61,26 @@ class InitTest(unittest.TestCase):
                 pass
         pdf = BrokenPDF()
         self.assertEqual(len(pdf), 0)
+
+    def test_locked_with_only_user_password(self):
+        with self.assertRaises(pdftotext.Error):
+            pdf = pdftotext.PDF(get_file("user_password.pdf"))
+
+    def test_locked_with_only_user_password_user_unlock(self):
+        pdf = pdftotext.PDF(get_file("user_password.pdf"), "user_password")
+        self.assertIn("secret", pdf[0])
+
+    def test_locked_with_both_passwords(self):
+        with self.assertRaises(pdftotext.Error):
+            pdf = pdftotext.PDF(get_file("both_passwords.pdf"))
+
+    def test_locked_with_both_passwords_user_unlock(self):
+        pdf = pdftotext.PDF(get_file("both_passwords.pdf"), "user_password")
+        self.assertIn("secret", pdf[0])
+
+    def test_locked_with_both_passwords_owner_unlock(self):
+        pdf = pdftotext.PDF(get_file("both_passwords.pdf"), "owner_password")
+        self.assertIn("secret", pdf[0])
 
 
 class GetItemTest(unittest.TestCase):
