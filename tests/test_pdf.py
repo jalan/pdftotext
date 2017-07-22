@@ -64,7 +64,7 @@ class InitTest(unittest.TestCase):
 
     def test_locked_with_only_user_password(self):
         with self.assertRaises(pdftotext.Error):
-            pdf = pdftotext.PDF(get_file("user_password.pdf"))
+            pdftotext.PDF(get_file("user_password.pdf"))
 
     def test_locked_with_only_user_password_user_unlock(self):
         pdf = pdftotext.PDF(get_file("user_password.pdf"), "user_password")
@@ -72,7 +72,7 @@ class InitTest(unittest.TestCase):
 
     def test_locked_with_both_passwords(self):
         with self.assertRaises(pdftotext.Error):
-            pdf = pdftotext.PDF(get_file("both_passwords.pdf"))
+            pdftotext.PDF(get_file("both_passwords.pdf"))
 
     def test_locked_with_both_passwords_user_unlock(self):
         pdf = pdftotext.PDF(get_file("both_passwords.pdf"), "user_password")
