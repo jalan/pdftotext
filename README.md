@@ -7,7 +7,7 @@ Simple PDF text extraction
 ```python
 import pdftotext
 
-# Load your pdf
+# Load your PDF
 with open("lorem_ipsum.pdf", "rb") as f:
     pdf = pdftotext.PDF(f)
 
