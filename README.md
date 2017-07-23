@@ -7,8 +7,13 @@ Simple PDF text extraction
 ```python
 import pdftotext
 
+# Load your pdf
 with open("lorem_ipsum.pdf", "rb") as f:
     pdf = pdftotext.PDF(f)
+
+# If it's password-protected
+with open("secure.pdf", "rb") as f:
+    pdf = pdftotext.PDF(f, "secret")
 
 # How many pages?
 print(len(pdf))
