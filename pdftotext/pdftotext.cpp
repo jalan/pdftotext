@@ -205,10 +205,6 @@ PyMODINIT_FUNC PyInit_pdftotext() {
     return module;
 }
 #else
-static PyMethodDef module_methods[] = {
-    {NULL},  // Sentinel
-};
-
 PyMODINIT_FUNC initpdftotext() {
     PyObject* module;
 
@@ -217,8 +213,7 @@ PyMODINIT_FUNC initpdftotext() {
         return;
     }
 
-    module = Py_InitModule3(
-        "pdftotext", module_methods, "Simple PDF text extraction.");
+    module = Py_InitModule3("pdftotext", NULL, "Simple PDF text extraction.");
     if (module == NULL) {
         return;
     }
