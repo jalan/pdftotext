@@ -5,6 +5,7 @@
 #include <poppler/cpp/poppler-global.h>
 #include <poppler/cpp/poppler-page.h>
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -101,7 +102,13 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
     if (page == NULL) {
         return PyErr_Format(PdftotextError, "Poppler error creating page");
     }
-    page_utf8 = page->text().to_utf8();
+
+    // Workaround for poppler bug #94517
+    const poppler::rectf rect = page->page_rect();
+    const int min = std::min(rect.left(), rect.top());
+    const int max = std::max(rect.right(), rect.bottom());
+
+    page_utf8 = page->text(poppler::rectf(min, min, max, max)).to_utf8();
     delete page;
     return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
 }
