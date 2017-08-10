@@ -15,6 +15,7 @@ file_names = [
     "corrupt_page.pdf",
     "landscape_0.pdf",
     "landscape_90.pdf",
+    "portrait.pdf",
     "two_page.pdf",
     "user_password.pdf",
 ]
@@ -92,6 +93,14 @@ class GetItemTest(unittest.TestCase):
         pdf = pdftotext.PDF(get_file("abcde.pdf"))
         result = pdf[0]
         self.assertIn("abcde", result)
+
+    def test_read_portrait(self):
+        pdf = pdftotext.PDF(get_file("portrait.pdf"))
+        result = pdf[0]
+        self.assertIn("a", result)
+        self.assertIn("b", result)
+        self.assertIn("c", result)
+        self.assertIn("d", result)
 
     def test_read_landscape_0(self):
         pdf = pdftotext.PDF(get_file("landscape_0.pdf"))
