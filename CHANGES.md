@@ -1,5 +1,10 @@
 # Changes
 
+## 2.0.1 - 2017-08-09
+
+ - Fix some text being missed on certain landscape pages
+
+
 ## 2.0.0 - 2017-07-23
 
  - Remove `PDF.page_count`, `PDF.read`, and `PDF.read_all`
