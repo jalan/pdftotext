@@ -11,7 +11,7 @@ env:
   - CPPFLAGS=--coverage
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y libpoppler-cpp-dev pkg-config
+  - sudo apt-get -qq install -y libpoppler-cpp-dev pkg-config
   - pip install cpp-coveralls
 script: python setup.py test
-after_success: coveralls -b .
+after_success: coveralls --build-root .
