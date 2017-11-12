@@ -24,7 +24,7 @@ macros = [
 
 module = Extension(
     "pdftotext",
-    sources=["pdftotext/pdftotext.cpp"],
+    sources=["pdftotext.cpp"],
     libraries=["poppler-cpp"],
     define_macros=macros,
     extra_compile_args=["-Wall"],
