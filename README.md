@@ -48,6 +48,12 @@ Fedora, Red Hat, and friends:
 sudo yum install gcc-c++ pkgconfig poppler-cpp-devel python-devel redhat-rpm-config
 ```
 
+macOS:
+
+```
+brew install pkg-config poppler
+```
+
 
 ## Install
 
