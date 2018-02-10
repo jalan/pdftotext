@@ -1,3 +1,4 @@
+import platform
 import subprocess
 from setuptools import Extension
 from setuptools import setup
@@ -18,6 +19,12 @@ def poppler_cpp_at_least(version):
     return True
 
 
+# On some BSDs, poppler is in /usr/local, which is not searched by default
+if platform.system() in ["FreeBSD", "OpenBSD"]:
+    include_dirs = ["/usr/local/include"]
+else:
+    include_dirs = None
+
 macros = [
     ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
 ]
@@ -26,6 +33,7 @@ module = Extension(
     "pdftotext",
     sources=["pdftotext.cpp"],
     libraries=["poppler-cpp"],
+    include_dirs=include_dirs,
     define_macros=macros,
     extra_compile_args=["-Wall"],
 )
