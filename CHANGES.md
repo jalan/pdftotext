@@ -1,5 +1,10 @@
 # Changes
 
+## 2.0.2 - 2018-02-19
+
+ - Search in `/usr/local` when building on some BSDs
+
+
 ## 2.0.1 - 2017-08-09
 
  - Fix some text being missed on certain landscape pages

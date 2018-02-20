@@ -40,7 +40,7 @@ module = Extension(
 
 setup(
     name="pdftotext",
-    version="2.0.1",
+    version="2.0.2",
     description="Simple PDF text extraction",
     url="https://github.com/jalan/pdftotext",
     author="Jason Alan Palmer",
