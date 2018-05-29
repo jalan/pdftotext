@@ -14,15 +14,29 @@ static PyObject* PdftotextError;
 typedef struct {
     PyObject_HEAD
     int page_count;
+    bool raw;
     PyObject* data;
     poppler::document* doc;
 } PDF;
 
 static void PDF_clear(PDF* self) {
     self->page_count = 0;
+    self->raw = false;
     delete self->doc;
     self->doc = NULL;
     Py_CLEAR(self->data);
+}
+
+static int PDF_set_raw(PDF* self, int raw) {
+    if (raw == 0) {
+        self->raw = false;
+    } else if (raw == 1) {
+        self->raw = true;
+    } else {
+        PyErr_Format(PyExc_ValueError, "a boolean is required");
+        return -1;
+    }
+    return 0;
 }
 
 static int PDF_load_data(PDF* self, PyObject* file) {
@@ -63,11 +77,14 @@ static int PDF_unlock(PDF* self, char* password) {
 static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
     PyObject* pdf_file;
     char* password = (char*)"";
-    static char* kwlist[] = {(char*)"pdf_file", (char*)"password", NULL};
+    int raw = 0;
+    static char* kwlist[] = {(char*)"pdf_file", (char*)"password", (char*)"raw", NULL};
 
     PDF_clear(self);
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|s", kwlist, &pdf_file, &password)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|si", kwlist, &pdf_file, &password, &raw)) {
+        goto error;
+    }
+    if (PDF_set_raw(self, raw) < 0) {
         goto error;
     }
     if (PDF_load_data(self, pdf_file) < 0) {
@@ -95,6 +112,7 @@ static void PDF_dealloc(PDF* self) {
 
 static PyObject* PDF_read_page(PDF* self, int page_number) {
     const poppler::page* page;
+    poppler::page::text_layout_enum layout_mode;
     std::vector<char> page_utf8;
 
     page = self->doc->create_page(page_number);
@@ -102,12 +120,16 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
         return PyErr_Format(PdftotextError, "Poppler error creating page");
     }
 
-    // Workaround for poppler bug #94517
+    // Workaround for poppler bug #94517, fixed in poppler 0.58.0, released 2017-09-01
     const poppler::rectf rect = page->page_rect();
     const int min = std::min(rect.left(), rect.top());
     const int max = std::max(rect.right(), rect.bottom());
 
-    page_utf8 = page->text(poppler::rectf(min, min, max, max)).to_utf8();
+    layout_mode = poppler::page::physical_layout;
+    if (self->raw) {
+        layout_mode = poppler::page::raw_order_layout;
+    }
+    page_utf8 = page->text(poppler::rectf(min, min, max, max), layout_mode).to_utf8();
     delete page;
     return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
 }
@@ -135,41 +157,41 @@ static PySequenceMethods PDF_sequence_methods = {
 
 static PyTypeObject PDFType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "pdftotext.PDF",                                   // tp_name
-    sizeof(PDF),                                       // tp_basicsize
-    0,                                                 // tp_itemsize
-    (destructor)PDF_dealloc,                           // tp_dealloc
-    0,                                                 // tp_print
-    0,                                                 // tp_getattr
-    0,                                                 // tp_setattr
-    0,                                                 // tp_reserved
-    0,                                                 // tp_repr
-    0,                                                 // tp_as_number
-    &PDF_sequence_methods,                             // tp_as_sequence
-    0,                                                 // tp_as_mapping
-    0,                                                 // tp_hash
-    0,                                                 // tp_call
-    0,                                                 // tp_str
-    0,                                                 // tp_getattro
-    0,                                                 // tp_setattro
-    0,                                                 // tp_as_buffer
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,          // tp_flags
-    "PDF(pdf_file, password="") -> new PDF document",  // tp_doc
-    0,                                                 // tp_traverse
-    0,                                                 // tp_clear
-    0,                                                 // tp_richcompare
-    0,                                                 // tp_weaklistoffset
-    0,                                                 // tp_iter
-    0,                                                 // tp_iternext
-    0,                                                 // tp_methods
-    0,                                                 // tp_members
-    0,                                                 // tp_getset
-    0,                                                 // tp_base
-    0,                                                 // tp_dict
-    0,                                                 // tp_descr_get
-    0,                                                 // tp_descr_set
-    0,                                                 // tp_dictoffset
-    (initproc)PDF_init,                                // tp_init
+    "pdftotext.PDF",                                                // tp_name
+    sizeof(PDF),                                                    // tp_basicsize
+    0,                                                              // tp_itemsize
+    (destructor)PDF_dealloc,                                        // tp_dealloc
+    0,                                                              // tp_print
+    0,                                                              // tp_getattr
+    0,                                                              // tp_setattr
+    0,                                                              // tp_reserved
+    0,                                                              // tp_repr
+    0,                                                              // tp_as_number
+    &PDF_sequence_methods,                                          // tp_as_sequence
+    0,                                                              // tp_as_mapping
+    0,                                                              // tp_hash
+    0,                                                              // tp_call
+    0,                                                              // tp_str
+    0,                                                              // tp_getattro
+    0,                                                              // tp_setattro
+    0,                                                              // tp_as_buffer
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,                       // tp_flags
+    "PDF(pdf_file, password=\"\", raw=False) -> new PDF document",  // tp_doc
+    0,                                                              // tp_traverse
+    0,                                                              // tp_clear
+    0,                                                              // tp_richcompare
+    0,                                                              // tp_weaklistoffset
+    0,                                                              // tp_iter
+    0,                                                              // tp_iternext
+    0,                                                              // tp_methods
+    0,                                                              // tp_members
+    0,                                                              // tp_getset
+    0,                                                              // tp_base
+    0,                                                              // tp_dict
+    0,                                                              // tp_descr_get
+    0,                                                              // tp_descr_set
+    0,                                                              // tp_dictoffset
+    (initproc)PDF_init,                                             // tp_init
 };
 
 #if POPPLER_CPP_AT_LEAST_0_30_0

@@ -16,6 +16,7 @@ file_names = [
     "landscape_0.pdf",
     "landscape_90.pdf",
     "portrait.pdf",
+    "table.pdf",
     "two_page.pdf",
     "user_password.pdf",
 ]
@@ -197,3 +198,27 @@ class ListTest(unittest.TestCase):
             result = result + page
         self.assertIn("one", result)
         self.assertIn("two", result)
+
+
+class RawTest(unittest.TestCase):
+    """Test reading in raw layout."""
+
+    def test_raw_vs_not(self):
+        filename = "table.pdf"
+        pdf = pdftotext.PDF(get_file(filename))
+        raw_pdf = pdftotext.PDF(get_file(filename), raw=True)
+        self.assertNotEqual(pdf[0], raw_pdf[0])
+
+    def test_raw_invalid_type(self):
+        with self.assertRaises(TypeError):
+            pdftotext.PDF(get_file("blank.pdf"), raw="")
+
+    def test_raw_invalid_value(self):
+        with self.assertRaises(ValueError):
+            pdftotext.PDF(get_file("blank.pdf"), raw=100)
+
+    def test_raw_is_not_default(self):
+        filename = "table.pdf"
+        pdf_default = pdftotext.PDF(get_file(filename))
+        pdf_raw_false = pdftotext.PDF(get_file(filename), raw=False)
+        self.assertEqual(pdf_default[0], pdf_raw_false[0])
