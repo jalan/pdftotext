@@ -1,5 +1,10 @@
 # Changes
 
+## 2.1.0 - 2018-05-30
+
+ - Support reading PDFs in raw layout mode
+
+
 ## 2.0.2 - 2018-02-19
 
  - Search in `/usr/local` when building on some BSDs
