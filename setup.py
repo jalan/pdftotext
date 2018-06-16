@@ -38,13 +38,18 @@ module = Extension(
     extra_compile_args=["-Wall"],
 )
 
+with open("README.md", "r") as f:
+    long_description = f.read()
+
 setup(
     name="pdftotext",
     version="2.1.0",
-    description="Simple PDF text extraction",
-    url="https://github.com/jalan/pdftotext",
     author="Jason Alan Palmer",
     author_email="jalanpalmer@gmail.com",
+    description="Simple PDF text extraction",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/jalan/pdftotext",
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 2",
