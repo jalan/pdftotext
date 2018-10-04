@@ -29,13 +29,20 @@ macros = [
     ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
 ]
 
+# On macOS, some distributions of python build extensions for 10.6 by default,
+# but poppler uses C++11 features that require at least 10.9
+if platform.system() == "Darwin":
+    extra_compile_args = ["-Wall", "-mmacosx-version-min=10.9"]
+else:
+    extra_compile_args = ["-Wall"]
+
 module = Extension(
     "pdftotext",
     sources=["pdftotext.cpp"],
     libraries=["poppler-cpp"],
     include_dirs=include_dirs,
     define_macros=macros,
-    extra_compile_args=["-Wall"],
+    extra_compile_args=extra_compile_args,
 )
 
 with open("README.md", "r") as f:
