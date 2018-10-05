@@ -5,6 +5,7 @@
 #include <poppler/cpp/poppler-page.h>
 
 #include <algorithm>
+#include <climits>
 #include <string>
 #include <vector>
 
@@ -58,7 +59,11 @@ static int PDF_create_doc(PDF* self) {
     if (PyBytes_AsStringAndSize(self->data, &buf, &len) < 0) {
         return -1;
     }
-    self->doc = poppler::document::load_from_raw_data(buf, len);
+    if (len > INT_MAX) {
+        PyErr_Format(PdftotextError, "invalid buffer length %zd", len);
+        return -1;
+    }
+    self->doc = poppler::document::load_from_raw_data(buf, (int)len);
     if (self->doc == NULL) {
         PyErr_Format(PdftotextError, "poppler error creating document");
         return -1;
@@ -145,7 +150,7 @@ static PyObject* PDF_getitem(PyObject* obj, Py_ssize_t i) {
     if (i < 0 || i >= self->page_count) {
         return PyErr_Format(PyExc_IndexError, "index out of range");
     }
-    return PDF_read_page(self, i);
+    return PDF_read_page(self, (int)i);
 }
 
 static PySequenceMethods PDF_sequence_methods = {
