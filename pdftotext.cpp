@@ -60,7 +60,7 @@ static int PDF_create_doc(PDF* self) {
     }
     self->doc = poppler::document::load_from_raw_data(buf, len);
     if (self->doc == NULL) {
-        PyErr_Format(PdftotextError, "Poppler error creating document");
+        PyErr_Format(PdftotextError, "poppler error creating document");
         return -1;
     }
     return 0;
@@ -68,7 +68,7 @@ static int PDF_create_doc(PDF* self) {
 
 static int PDF_unlock(PDF* self, char* password) {
     if (self->doc->unlock(std::string(password), std::string(password))) {
-        PyErr_Format(PdftotextError, "Failed to unlock document");
+        PyErr_Format(PdftotextError, "failed to unlock document");
         return -1;
     }
     return 0;
@@ -117,7 +117,7 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
 
     page = self->doc->create_page(page_number);
     if (page == NULL) {
-        return PyErr_Format(PdftotextError, "Poppler error creating page");
+        return PyErr_Format(PdftotextError, "poppler error creating page");
     }
 
     // Workaround for poppler bug #94517, fixed in poppler 0.58.0, released 2017-09-01
@@ -143,7 +143,7 @@ static PyObject* PDF_getitem(PyObject* obj, Py_ssize_t i) {
     PDF* self = (PDF*)obj;
 
     if (i < 0 || i >= self->page_count) {
-        return PyErr_Format(PyExc_IndexError, "Index out of range");
+        return PyErr_Format(PyExc_IndexError, "index out of range");
     }
     return PDF_read_page(self, i);
 }
