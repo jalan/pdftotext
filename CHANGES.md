@@ -1,5 +1,10 @@
 # Changes
 
+## 2.1.1 - 2018-10-07
+
+ - For macOS, require at least version 10.9
+
+
 ## 2.1.0 - 2018-05-30
 
  - Support reading PDFs in raw layout mode
