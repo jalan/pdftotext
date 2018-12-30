@@ -1,5 +1,7 @@
 import platform
 import subprocess
+from distutils.version import StrictVersion
+
 from setuptools import Extension
 from setuptools import setup
 
@@ -19,11 +21,33 @@ def poppler_cpp_at_least(version):
     return True
 
 
+def os_x_at_least_mojave():
+    if platform.system() != "Darwin":
+        return False
+
+    darwin_platform_values = platform.platform().split("-")
+    try:
+        darwin_version_number_string = darwin_platform_values[1]
+    except IndexError:
+        return False
+    os_x_mojave_version_string = "18.0.0"
+    os_x_mojave_strict_version = StrictVersion(os_x_mojave_version_string)
+    current_os_x_strict_version = StrictVersion(darwin_version_number_string)
+
+    return current_os_x_strict_version >= os_x_mojave_strict_version
+
+
 # On some BSDs, poppler is in /usr/local, which is not searched by default
-if platform.system() in ["FreeBSD", "OpenBSD"]:
+if platform.system() in ["FreeBSD", "OpenBSD"] or os_x_at_least_mojave():
     include_dirs = ["/usr/local/include"]
 else:
     include_dirs = None
+
+# On OS X Mojave, poppler is in /usr/local/lib (when poppler is installed according to pdftotext's README)
+if os_x_at_least_mojave():
+    library_dirs = ["/usr/local/lib"]
+else:
+    library_dirs = None
 
 macros = [
     ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
@@ -33,6 +57,7 @@ macros = [
 # but poppler uses C++11 features that require at least 10.9
 if platform.system() == "Darwin":
     extra_compile_args = ["-Wall", "-mmacosx-version-min=10.9"]
+    extra_compile_args += ["-std=c++11"] if os_x_at_least_mojave() else []
 else:
     extra_compile_args = ["-Wall"]
 
@@ -40,6 +65,7 @@ module = Extension(
     "pdftotext",
     sources=["pdftotext.cpp"],
     libraries=["poppler-cpp"],
+    library_dirs=library_dirs,
     include_dirs=include_dirs,
     define_macros=macros,
     extra_compile_args=extra_compile_args,
