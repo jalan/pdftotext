@@ -1,16 +1,16 @@
 dist: xenial
 language: python
-python:
-  - "3.7"
-  - "3.6"
-  - "3.5"
-  - "3.4"
-  - "2.7"
-env:
-  - CPPFLAGS=--coverage
+matrix:
+  include:
+    - python: "3.7"
+      env: CPPFLAGS=--coverage
+      before_script: pip install cpp-coveralls
+      after_success: coveralls --build-root .
+    - python: "3.6"
+    - python: "3.5"
+    - python: "3.4"
+    - python: "2.7"
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y libpoppler-cpp-dev pkg-config
-  - pip install cpp-coveralls
 script: python setup.py test
-after_success: coveralls --build-root .
