@@ -55,6 +55,11 @@ macOS:
 brew install pkg-config poppler
 ```
 
+Conda users may also need `libgcc`:
+
+```
+conda install libgcc
+```
 
 ## Install
 
