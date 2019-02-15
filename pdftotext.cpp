@@ -181,7 +181,21 @@ static PyTypeObject PDFType = {
     0,                                                              // tp_setattro
     0,                                                              // tp_as_buffer
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,                       // tp_flags
-    "PDF(pdf_file, password=\"\", raw=False) -> new PDF document",  // tp_doc
+    "PDF(pdf_file, password=\"\", raw=False)\n"
+    "\n"
+    "Args:\n"
+    "    pdf_file: A file opened for reading in binary mode.\n"
+    "    password: Unlocks the document, if required. Either the owner\n"
+    "        password or the user password works.\n"
+    "    raw: If True, page text is output in the order it appears in the\n"
+    "        content stream, rather than in the order it appears on the\n"
+    "        page.\n"
+    "\n"
+    "Example:\n"
+    "    with open(\"doc.pdf\", \"rb\") as f:\n"
+    "        pdf = PDF(f)\n"
+    "    for page in pdf:\n"
+    "        print(page)",                                          // tp_doc
     0,                                                              // tp_traverse
     0,                                                              // tp_clear
     0,                                                              // tp_richcompare
