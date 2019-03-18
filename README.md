@@ -49,6 +49,33 @@ Fedora, Red Hat, and friends:
 sudo yum install gcc-c++ pkgconfig poppler-cpp-devel python-devel redhat-rpm-config
 ```
 
+CentOS: 
+
+```
+sudo yum install gcc-c++ pkgconfig python-devel redhat-rpm-config
+```
+
+
+On CentOS the `libpoppler-cpp` library is not included with the system so we need to build from source. Following the instructions from [this link](https://github.com/ropensci/pdftools#building-from-source), note that recent versions of poppler require C++11 which is not available on CentOS, so we build a slightly older version of libpoppler.
+
+    # Build dependencies
+    yum install wget xz libjpeg-devel openjpeg2-devel
+    
+    # Download and extract
+    wget https://poppler.freedesktop.org/poppler-0.47.0.tar.xz
+    tar -Jxvf poppler-0.47.0.tar.xz
+    cd poppler-0.47.0
+    
+    # Build and install
+    ./configure
+    make
+    sudo make install
+
+By default libraries get installed in `/usr/local/lib` and `/usr/local/include`. On CentOS this is not a default search path so we need to set `PKG_CONFIG_PATH` and `LD_LIBRARY_PATH` to point R to the right directory:
+
+    export LD_LIBRARY_PATH="/usr/local/lib"
+    export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
+
 macOS:
 
 ```
