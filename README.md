@@ -43,23 +43,23 @@ sudo apt-get update
 sudo apt-get install build-essential libpoppler-cpp-dev pkg-config python-dev
 ```
 
-Fedora, Red Hat, and friends:
+Fedora, Red Hat, CentOS 7 and friends:
 
 ```
 sudo yum install gcc-c++ pkgconfig poppler-cpp-devel python-devel redhat-rpm-config
 ```
 
-CentOS: 
+CentOS 6: 
 
 ```
 sudo yum install gcc-c++ pkgconfig python-devel redhat-rpm-config
 ```
 
 
-On CentOS the `libpoppler-cpp` library is not included with the system so we need to build from source. Following the instructions from [this link](https://github.com/ropensci/pdftools#building-from-source), note that recent versions of poppler require C++11 which is not available on CentOS, so we build a slightly older version of libpoppler.
+On CentOS 6 the `libpoppler-cpp` library is not included with the system so we need to build from source. Following the instructions from [this link](https://github.com/ropensci/pdftools#building-from-source), note that recent versions of poppler require C++11 which is not available on CentOS, so we build a slightly older version of libpoppler.
 
     # Build dependencies
-    yum install wget xz libjpeg-devel openjpeg2-devel
+    sudo yum install wget xz libjpeg-devel openjpeg2-devel
     
     # Download and extract
     wget https://poppler.freedesktop.org/poppler-0.47.0.tar.xz
