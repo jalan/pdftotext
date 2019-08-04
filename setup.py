@@ -20,10 +20,12 @@ def poppler_cpp_at_least(version):
 
 
 # On some BSDs, poppler is in /usr/local, which is not searched by default
-if platform.system() in ["FreeBSD", "OpenBSD"]:
+if platform.system() in ["Darwin", "FreeBSD", "OpenBSD"]:
     include_dirs = ["/usr/local/include"]
+    library_dirs = ["/usr/local/lib"]
 else:
     include_dirs = None
+    library_dirs = None
 
 macros = [
     ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
@@ -41,6 +43,7 @@ module = Extension(
     sources=["pdftotext.cpp"],
     libraries=["poppler-cpp"],
     include_dirs=include_dirs,
+    library_dirs=library_dirs,
     define_macros=macros,
     extra_compile_args=extra_compile_args,
 )
