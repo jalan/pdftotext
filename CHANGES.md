@@ -1,5 +1,11 @@
 # Changes
 
+## 2.1.2 - 2019-08-06
+
+ - Improve documentation
+ - Search in `/usr/local` when building on macOS
+
+
 ## 2.1.1 - 2018-10-07
 
  - For macOS, require at least version 10.9

@@ -53,7 +53,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="pdftotext",
-    version="2.1.1",
+    version="2.1.2",
     author="Jason Alan Palmer",
     author_email="jalanpalmer@gmail.com",
     description="Simple PDF text extraction",
