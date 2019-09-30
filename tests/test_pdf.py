@@ -63,6 +63,7 @@ class InitTest(unittest.TestCase):
         class BrokenPDF(pdftotext.PDF):
             def __init__(self):
                 pass
+
         pdf = BrokenPDF()
         self.assertEqual(len(pdf), 0)
 
@@ -123,6 +124,7 @@ class GetItemTest(unittest.TestCase):
         class BrokenPDF(pdftotext.PDF):
             def __init__(self):
                 pass
+
         pdf = BrokenPDF()
         with self.assertRaises(IndexError):
             pdf[0]
@@ -163,6 +165,7 @@ class LengthTest(unittest.TestCase):
         class BrokenPDF(pdftotext.PDF):
             def __init__(self):
                 pass
+
         pdf = BrokenPDF()
         self.assertEqual(len(pdf), 0)
 

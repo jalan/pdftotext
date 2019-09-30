@@ -6,11 +6,9 @@ from setuptools import setup
 
 def poppler_cpp_at_least(version):
     try:
-        subprocess.check_call([
-            "pkg-config",
-            "--exists",
-            "poppler-cpp >= {}".format(version),
-        ])
+        subprocess.check_call(
+            ["pkg-config", "--exists", "poppler-cpp >= {}".format(version)]
+        )
     except subprocess.CalledProcessError:
         return False
     except OSError:
@@ -27,9 +25,7 @@ else:
     include_dirs = None
     library_dirs = None
 
-macros = [
-    ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
-]
+macros = [("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0")))]
 
 # On macOS, some distributions of python build extensions for 10.6 by default,
 # but poppler uses C++11 features that require at least 10.9
