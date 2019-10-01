@@ -1,5 +1,7 @@
 import platform
 import subprocess
+import sys
+from os import getenv, path
 from setuptools import Extension
 from setuptools import setup
 
@@ -21,6 +23,16 @@ def poppler_cpp_at_least(version):
 if platform.system() in ["Darwin", "FreeBSD", "OpenBSD"]:
     include_dirs = ["/usr/local/include"]
     library_dirs = ["/usr/local/lib"]
+elif platform.system() in ['Windows']:
+    conda_dir = os.getenv('CONDA_PREFIX')
+    if conda_dir is None:
+        print("ERROR: CONDA_PREFIX is not found.")
+        print("       Install Anaconda or fix missing CONDA_PREFIX and try again.")
+        sys.exit(1)
+    anaconda_poppler_include_dir = os.path.join(conda_dir, 'Library\include')
+    anaconda_poppler_library_dir = os.path.join(conda_dir, 'Library\lib')
+    include_dirs = [anaconda_poppler_include_dir]
+    library_dirs = [anaconda_poppler_library_dir]
 else:
     include_dirs = None
     library_dirs = None
