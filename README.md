@@ -55,6 +55,13 @@ macOS:
 brew install pkg-config poppler
 ```
 
+Windows:
+Install Build Tools for Microsoft Visual Studio C++
+Install poppler through conda:
+```
+conda install poppler
+```
+
 Conda users may also need `libgcc`:
 
 ```
