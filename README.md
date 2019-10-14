@@ -36,20 +36,19 @@ print("\n\n".join(pdf))
 
 ## OS Dependencies
 
-Debian, Ubuntu, and friends:
+### Debian, Ubuntu, and friends
 
 ```
-sudo apt-get update
 sudo apt-get install build-essential libpoppler-cpp-dev pkg-config python-dev
 ```
 
-Fedora, Red Hat, and friends:
+### Fedora, Red Hat, and friends
 
 ```
 sudo yum install gcc-c++ pkgconfig poppler-cpp-devel python-devel redhat-rpm-config
 ```
 
-macOS:
+### macOS
 
 ```
 brew install pkg-config poppler
@@ -58,17 +57,18 @@ brew install pkg-config poppler
 Conda users may also need `libgcc`:
 
 ```
-conda install libgcc
+conda install -c anaconda libgcc
 ```
 
-Windows:
+### Windows
 
-Install Build Tools for Microsoft Visual Studio C++
+Currently tested only when using conda:
 
-Install poppler through conda:
-```
-conda install poppler
-```
+ - Install the Microsoft Visual C++ Build Tools
+ - Install poppler through conda:
+   ```
+   conda install -c conda-forge poppler
+   ```
 
 
 ## Install

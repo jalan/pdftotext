@@ -1,7 +1,7 @@
+import os
 import platform
 import subprocess
 import sys
-from os import getenv, path
 from setuptools import Extension
 from setuptools import setup
 
@@ -19,32 +19,29 @@ def poppler_cpp_at_least(version):
     return True
 
 
+include_dirs = None
+library_dirs = None
+
 # On some BSDs, poppler is in /usr/local, which is not searched by default
 if platform.system() in ["Darwin", "FreeBSD", "OpenBSD"]:
     include_dirs = ["/usr/local/include"]
     library_dirs = ["/usr/local/lib"]
-elif platform.system() in ["Windows"]:
-    conda_dir = getenv("CONDA_PREFIX")
-    if conda_dir is None:
-        print("ERROR: CONDA_PREFIX is not found.")
-        print("       Install Anaconda or fix missing CONDA_PREFIX and try again.")
-        sys.exit(1)
-    anaconda_poppler_include_dir = path.join(conda_dir, "Library\include")
-    anaconda_poppler_library_dir = path.join(conda_dir, "Library\lib")
-    include_dirs = [anaconda_poppler_include_dir]
-    library_dirs = [anaconda_poppler_library_dir]
-else:
-    include_dirs = None
-    library_dirs = None
 
-macros = [("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0")))]
+# On Windows, only building with conda is tested so far
+if platform.system() == "Windows":
+    conda_prefix = os.getenv("CONDA_PREFIX")
+    if conda_prefix is not None:
+        include_dirs = [os.path.join(conda_prefix, "Library\include")]
+        library_dirs = [os.path.join(conda_prefix, "Library\lib")]
+
+extra_compile_args = ["-Wall"]
 
 # On macOS, some distributions of python build extensions for 10.6 by default,
 # but poppler uses C++11 features that require at least 10.9
 if platform.system() == "Darwin":
-    extra_compile_args = ["-Wall", "-mmacosx-version-min=10.9"]
-else:
-    extra_compile_args = ["-Wall"]
+    extra_compile_args += ["-mmacosx-version-min=10.9"]
+
+macros = [("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0")))]
 
 module = Extension(
     "pdftotext",
