@@ -69,6 +69,10 @@ Install poppler through conda:
 ```
 conda install poppler
 ```
+if above command doesn't work :
+```
+conda install -c conda-forge poppler 
+```
 
 
 ## Install
