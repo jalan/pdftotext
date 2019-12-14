@@ -40,7 +40,7 @@ Debian, Ubuntu, and friends:
 
 ```
 sudo apt-get update
-sudo apt-get install build-essential libpoppler-cpp-dev pkg-config python-dev
+sudo apt-get install build-essential libpoppler-cpp-dev pkg-config python3-dev
 ```
 
 Fedora, Red Hat, and friends:
