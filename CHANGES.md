@@ -1,5 +1,10 @@
 # Changes
 
+## 2.1.3 - 2020-01-06
+
+ - Support building on Windows when using conda
+
+
 ## 2.1.2 - 2019-08-06
 
  - Improve documentation
