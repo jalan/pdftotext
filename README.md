@@ -38,7 +38,11 @@ print("\n\n".join(pdf))
 ## OS Dependencies
 
 ### Debian, Ubuntu, and friends
-
+for python3
+```raw
+sudo apt-get install build-essential libpoppler-cpp-dev pkg-config python3-dev
+```
+for python2
 ```
 sudo apt-get install build-essential libpoppler-cpp-dev pkg-config python-dev
 ```
