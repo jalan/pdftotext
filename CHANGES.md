@@ -1,5 +1,10 @@
 # Changes
 
+## 2.1.4 - 2020-01-25
+
+ - Pass `-std=c++11` when building on macOS
+
+
 ## 2.1.3 - 2020-01-06
 
  - Support building on Windows when using conda
