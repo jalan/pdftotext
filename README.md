@@ -37,28 +37,25 @@ print("\n\n".join(pdf))
 
 ## OS Dependencies
 
+These instructions assume you're using Python 3 on a recent OS. Package names
+may differ for Python 2 or for an older OS.
+
 ### Debian, Ubuntu, and friends
 
 ```
-sudo apt-get install build-essential libpoppler-cpp-dev pkg-config python-dev
+sudo apt install build-essential libpoppler-cpp-dev pkg-config python3-dev
 ```
 
 ### Fedora, Red Hat, and friends
 
 ```
-sudo yum install gcc-c++ pkgconfig poppler-cpp-devel python-devel redhat-rpm-config
+sudo yum install gcc-c++ pkgconfig poppler-cpp-devel python3-devel
 ```
 
 ### macOS
 
 ```
-brew install pkg-config poppler
-```
-
-Conda users may also need `libgcc`:
-
-```
-conda install -c anaconda libgcc
+brew install pkg-config poppler python
 ```
 
 ### Windows
