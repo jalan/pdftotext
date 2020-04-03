@@ -9,10 +9,12 @@ jobs:
     - os: "linux"
       python: "3.6.10"
     - os: "linux"
-      python: "3.7.6"
+      python: "3.7.7"
     - os: "linux"
-      python: "3.8.1"
-      env: "CPPFLAGS=--coverage"
+      python: "3.8.2"
+      env:
+        - "CPPFLAGS=--coverage"
+        - "LATEST=1"
     - name: "macOS"
       os: "osx"
       osx_image: "xcode11.3"
@@ -33,7 +35,7 @@ before_install:
 
 before_script:
   - |
-    if [[ $TRAVIS_OS_NAME == "linux" && $TRAVIS_PYTHON_VERSION == "3.8.1" ]]; then
+    if [[ $TRAVIS_OS_NAME == "linux" && $LATEST ]]; then
     pip install black cpp-coveralls
     fi
 
@@ -49,12 +51,12 @@ script:
     python3 setup.py test
     fi
   - |
-    if [[ $TRAVIS_OS_NAME == "linux" && $TRAVIS_PYTHON_VERSION == "3.8.1" ]]; then
+    if [[ $TRAVIS_OS_NAME == "linux" && $LATEST ]]; then
     black --check .
     fi
 
 after_success:
   - |
-    if [[ $TRAVIS_OS_NAME == "linux" && $TRAVIS_PYTHON_VERSION == "3.8.1" ]]; then
+    if [[ $TRAVIS_OS_NAME == "linux" && $LATEST ]]; then
     coveralls --build-root .
     fi
