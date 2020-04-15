@@ -35,11 +35,13 @@ if platform.system() == "Windows":
         library_dirs = [os.path.join(conda_prefix, "Library\lib")]
 
 extra_compile_args = ["-Wall"]
+extra_link_args = []
 
 # On macOS, some distributions of python build extensions for 10.6 by default,
 # but poppler uses C++11 features that require at least 10.9
 if platform.system() == "Darwin":
     extra_compile_args += ["-mmacosx-version-min=10.9", "-std=c++11"]
+    extra_link_args += ["-mmacosx-version-min=10.9"]
 
 macros = [("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0")))]
 
@@ -51,6 +53,7 @@ module = Extension(
     library_dirs=library_dirs,
     define_macros=macros,
     extra_compile_args=extra_compile_args,
+    extra_link_args=extra_link_args,
 )
 
 with open("README.md", "r") as f:
