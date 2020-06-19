@@ -31,8 +31,8 @@ if platform.system() in ["Darwin", "FreeBSD", "OpenBSD"]:
 if platform.system() == "Windows":
     conda_prefix = os.getenv("CONDA_PREFIX")
     if conda_prefix is not None:
-        include_dirs = [os.path.join(conda_prefix, "Library\include")]
-        library_dirs = [os.path.join(conda_prefix, "Library\lib")]
+        include_dirs = [os.path.join(conda_prefix, r"Library\include")]
+        library_dirs = [os.path.join(conda_prefix, r"Library\lib")]
 
 extra_compile_args = ["-Wall"]
 extra_link_args = []
