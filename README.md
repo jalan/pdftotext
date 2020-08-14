@@ -2,6 +2,7 @@
 
 [![PyPI Status](https://img.shields.io/pypi/v/pdftotext.svg)](https://pypi.python.org/pypi/pdftotext)
 [![Travis Status](https://api.travis-ci.com/jalan/pdftotext.svg?branch=master)](https://travis-ci.com/jalan/pdftotext)
+[![Azure Status](https://dev.azure.com/jalanpalmer/jalanpalmer/_apis/build/status/jalan.pdftotext?branchName=master)](https://dev.azure.com/jalanpalmer/jalanpalmer/_build/latest?definitionId=1&branchName=master)
 [![AppVeyor status](https://ci.appveyor.com/api/projects/status/uwcjxgu31kirkiuj/branch/master?svg=true)](https://ci.appveyor.com/project/jalan/pdftotext/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/jalan/pdftotext/badge.svg?branch=master)](https://coveralls.io/github/jalan/pdftotext?branch=master)
 [![Downloads](https://img.shields.io/pypi/dm/pdftotext.svg)](https://pypistats.org/packages/pdftotext)
