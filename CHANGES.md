@@ -1,5 +1,10 @@
 # Changes
 
+## 2.1.5 - 2020-08-14
+
+ - Pass `-mmacosx-version-min=10.9` to the linker on macOS
+
+
 ## 2.1.4 - 2020-01-25
 
  - Pass `-std=c++11` when building on macOS
