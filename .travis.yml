@@ -3,15 +3,15 @@ language: python
 jobs:
   include:
     - os: "linux"
-      python: "2.7.17"
+      python: "2.7.18"
     - os: "linux"
-      python: "3.5.9"
+      python: "3.6.12"
     - os: "linux"
-      python: "3.6.10"
+      python: "3.7.9"
     - os: "linux"
-      python: "3.7.7"
+      python: "3.8.7"
     - os: "linux"
-      python: "3.8.2"
+      python: "3.9.1"
       env:
         - "CPPFLAGS=--coverage"
         - "LATEST=1"
