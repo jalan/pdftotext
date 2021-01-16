@@ -8,14 +8,14 @@ jobs:
       matrix:
         python_2.7:
           python.version: "2.7"
-        python_3.5:
-          python.version: "3.5"
         python_3.6:
           python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - task: UsePythonVersion@0
         inputs:
@@ -36,14 +36,14 @@ jobs:
       matrix:
         python_2.7:
           python.version: "2.7"
-        python_3.5:
-          python.version: "3.5"
         python_3.6:
           python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - task: UsePythonVersion@0
         inputs:
@@ -68,6 +68,8 @@ jobs:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - script: sudo chown -R $USER $CONDA
         displayName: "Fix ownership"
@@ -97,6 +99,8 @@ jobs:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - script: sudo chown -R $USER $CONDA
         displayName: "Fix ownership"
@@ -122,14 +126,14 @@ jobs:
       matrix:
         python_2.7:
           python.version: "2.7"
-        python_3.5:
-          python.version: "3.5"
         python_3.6:
           python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - task: UsePythonVersion@0
         inputs:
@@ -152,14 +156,14 @@ jobs:
       matrix:
         python_2.7:
           python.version: "2.7"
-        python_3.5:
-          python.version: "3.5"
         python_3.6:
           python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - task: UsePythonVersion@0
         inputs:
@@ -186,6 +190,8 @@ jobs:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - script: echo "##vso[task.prependpath]$CONDA/bin"
         displayName: "Add conda to path"
@@ -215,6 +221,8 @@ jobs:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - script: echo "##vso[task.prependpath]$CONDA/bin"
         displayName: "Add conda to path"
@@ -244,6 +252,8 @@ jobs:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
         displayName: "Add conda to path"
@@ -271,6 +281,8 @@ jobs:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
     steps:
       - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
         displayName: "Add conda to path"
