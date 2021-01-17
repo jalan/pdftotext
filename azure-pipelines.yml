@@ -119,36 +119,6 @@ jobs:
         displayName: "Test"
 
   - job:
-    displayName: "ubuntu_16.04"
-    pool:
-      vmImage: "ubuntu-16.04"
-    strategy:
-      matrix:
-        python_2.7:
-          python.version: "2.7"
-        python_3.6:
-          python.version: "3.6"
-        python_3.7:
-          python.version: "3.7"
-        python_3.8:
-          python.version: "3.8"
-        python_3.9:
-          python.version: "3.9"
-    steps:
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: "$(python.version)"
-        displayName: "Use Python $(python.version)"
-      - script: |
-          sudo apt-get update
-          sudo apt-get install --yes libpoppler-cpp-dev pkg-config
-        displayName: "Install dependencies"
-      - script: |
-          python --version
-          python setup.py test
-        displayName: "Test"
-
-  - job:
     displayName: "ubuntu_18.04"
     pool:
       vmImage: "ubuntu-18.04"
@@ -179,9 +149,39 @@ jobs:
         displayName: "Test"
 
   - job:
-    displayName: "ubuntu_16.04 conda"
+    displayName: "ubuntu_20.04"
     pool:
-      vmImage: "ubuntu-16.04"
+      vmImage: "ubuntu-20.04"
+    strategy:
+      matrix:
+        python_2.7:
+          python.version: "2.7"
+        python_3.6:
+          python.version: "3.6"
+        python_3.7:
+          python.version: "3.7"
+        python_3.8:
+          python.version: "3.8"
+        python_3.9:
+          python.version: "3.9"
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "$(python.version)"
+        displayName: "Use Python $(python.version)"
+      - script: |
+          sudo apt-get update
+          sudo apt-get install --yes libpoppler-cpp-dev pkg-config
+        displayName: "Install dependencies"
+      - script: |
+          python --version
+          python setup.py test
+        displayName: "Test"
+
+  - job:
+    displayName: "ubuntu_18.04 conda"
+    pool:
+      vmImage: "ubuntu-18.04"
     strategy:
       matrix:
         python_3.6:
@@ -210,9 +210,9 @@ jobs:
         displayName: "Test"
 
   - job:
-    displayName: "ubuntu_18.04 conda"
+    displayName: "ubuntu_20.04 conda"
     pool:
-      vmImage: "ubuntu-18.04"
+      vmImage: "ubuntu-20.04"
     strategy:
       matrix:
         python_3.6:
