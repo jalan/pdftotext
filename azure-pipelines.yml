@@ -297,3 +297,81 @@ jobs:
           python --version
           python setup.py test
         displayName: "Test"
+
+  - job:
+    displayName: "Windows CI Build"
+    pool:
+      vmImage: "vs2017-win2016"
+    variables:
+      CIBW_REPAIR_WHEEL_COMMAND: delvewheel repair --add-path C:\Miniconda\Library\bin -w {dest_dir} {wheel}
+      CIBW_BUILD: cp3*64
+      CIBW_SKIP: cp35*
+    steps:
+      - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+        displayName: "Add conda to path"
+      - powershell: |
+          conda update --yes conda
+          conda config --add channels conda-forge
+          conda config --set channel_priority strict
+          conda install poppler pkg-config
+        displayName: "Install dependencies"
+      - bash: |
+          set -o errexit
+          python -m pip install --upgrade pip
+          pip install cibuildwheel==1.8.0 delvewheel>0.0.9
+        displayName: Install cibuildwheel and delvewheel
+      - powershell: |
+          $env:CL = "/MT /IC:\Miniconda\Library\include"
+          $env:LINK = "/LIBPATH:C:\Miniconda\Library\lib"
+          cibuildwheel --output-dir wheelhouse .
+        displayName: Build wheels
+      - task: PublishBuildArtifacts@1
+        inputs: {pathtoPublish: 'wheelhouse'}
+
+  - job:
+    displayName: macOS CI Build
+    variables:
+      CIBW_BUILD: cp3*
+      CIBW_SKIP: cp35*
+    pool: {vmImage: 'macOS-10.15'}
+    steps:
+      - task: UsePythonVersion@0
+      - script: brew install pkg-config poppler
+        displayName: "Install poppler and pkg-config"
+      - bash: |
+          set -o errexit
+          python3 -m pip install --upgrade pip
+          python3 -m pip install cibuildwheel==1.8.0
+        displayName: Install dependencies
+      - bash: cibuildwheel --output-dir wheelhouse .
+        displayName: Build wheels
+      - task: PublishBuildArtifacts@1
+        inputs: {pathtoPublish: wheelhouse}
+
+  - job: 
+    displayName: Linux CI Build
+    variables:
+      CIBW_BUILD: cp3*
+      CIBW_SKIP: cp35*
+      CIBW_BEFORE_ALL: |
+        pip install --upgrade cmake
+        yum install -y fontconfig-devel libjpeg-turbo-devel openjpeg2-devel
+        git clone https://gitlab.freedesktop.org/poppler/poppler
+        cd poppler/
+        mkdir build
+        cd build
+        cmake ..
+        make -j8
+        make install
+    pool: {vmImage: 'Ubuntu-16.04'}
+    steps:
+     - task: UsePythonVersion@0
+     - bash: |
+         set -o errexit
+         python3 -m pip install --upgrade pip
+         pip3 install cibuildwheel==1.8.0
+       displayName: Install dependencies
+     - bash: cibuildwheel --output-dir wheelhouse .
+       displayName: Build wheels
+     - task: PublishBuildArtifacts@1
+       inputs: {pathtoPublish: 'wheelhouse'}
