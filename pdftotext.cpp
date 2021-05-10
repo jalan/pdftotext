@@ -125,16 +125,21 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
         return PyErr_Format(PdftotextError, "poppler error creating page");
     }
 
-    // Workaround for poppler bug #94517, fixed in poppler 0.58.0, released 2017-09-01
-    const poppler::rectf rect = page->page_rect();
-    const int min = std::min(rect.left(), rect.top());
-    const int max = std::max(rect.right(), rect.bottom());
-
     layout_mode = poppler::page::physical_layout;
     if (self->raw) {
         layout_mode = poppler::page::raw_order_layout;
     }
+
+    #if POPPLER_CPP_AT_LEAST_0_58_0
+    page_utf8 = page->text(poppler::rectf(0, 0, 0, 0), layout_mode).to_utf8();
+    #else
+    // Workaround for poppler bug #94517, fixed in poppler 0.58.0, released 2017-09-01
+    const poppler::rectf rect = page->page_rect();
+    const int min = std::min(rect.left(), rect.top());
+    const int max = std::max(rect.right(), rect.bottom());
     page_utf8 = page->text(poppler::rectf(min, min, max, max), layout_mode).to_utf8();
+    #endif
+
     delete page;
     return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
 }

@@ -43,7 +43,10 @@ if platform.system() == "Darwin":
     extra_compile_args += ["-mmacosx-version-min=10.9", "-std=c++11"]
     extra_link_args += ["-mmacosx-version-min=10.9"]
 
-macros = [("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0")))]
+macros = [
+    ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
+    ("POPPLER_CPP_AT_LEAST_0_58_0", int(poppler_cpp_at_least("0.58.0"))),
+]
 
 module = Extension(
     "pdftotext",
