@@ -1,5 +1,10 @@
 # Changes
 
+## 2.1.6 - 2021-05-14
+
+ - Fix an issue with detecting the bounding box on some pages
+
+
 ## 2.1.5 - 2020-08-14
 
  - Pass `-mmacosx-version-min=10.9` to the linker on macOS
