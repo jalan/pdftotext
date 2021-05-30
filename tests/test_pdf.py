@@ -17,7 +17,8 @@ file_names = [
     "landscape_90.pdf",
     "portrait.pdf",
     "table.pdf",
-    "two_page.pdf",
+    "three_columns.pdf",
+    "two_pages.pdf",
     "user_password.pdf",
 ]
 test_files = {}
@@ -145,7 +146,7 @@ class GetItemTest(unittest.TestCase):
             pdf[0]
 
     def test_read_page_two(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        pdf = pdftotext.PDF(get_file("two_pages.pdf"))
         result = pdf[1]
         self.assertIn("two", result)
 
@@ -158,7 +159,7 @@ class LengthTest(unittest.TestCase):
         self.assertEqual(len(pdf), 1)
 
     def test_length_two(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        pdf = pdftotext.PDF(get_file("two_pages.pdf"))
         self.assertEqual(len(pdf), 2)
 
     def test_length_no_doc(self):
@@ -173,29 +174,25 @@ class LengthTest(unittest.TestCase):
 class ListTest(unittest.TestCase):
     """Test iterating over pages."""
 
-    def test_list_length(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
-        self.assertEqual(len(pdf), 2)
-
     def test_list_first_element(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        pdf = pdftotext.PDF(get_file("two_pages.pdf"))
         self.assertIn("one", pdf[0])
 
     def test_list_second_element(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        pdf = pdftotext.PDF(get_file("two_pages.pdf"))
         self.assertIn("two", pdf[1])
 
     def test_list_invalid_element(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        pdf = pdftotext.PDF(get_file("two_pages.pdf"))
         with self.assertRaises(IndexError):
             pdf[2]
 
     def test_list_last_element(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        pdf = pdftotext.PDF(get_file("two_pages.pdf"))
         self.assertIn("two", pdf[-1])
 
     def test_for_loop(self):
-        pdf = pdftotext.PDF(get_file("two_page.pdf"))
+        pdf = pdftotext.PDF(get_file("two_pages.pdf"))
         result = ""
         for page in pdf:
             result = result + page
