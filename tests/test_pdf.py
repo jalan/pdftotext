@@ -121,6 +121,21 @@ class GetItemTest(unittest.TestCase):
         self.assertIn("c", result)
         self.assertIn("d", result)
 
+    def test_read_columns(self):
+        pdf = pdftotext.PDF(get_file("three_columns.pdf"))
+        page = pdf[0]
+        col1_index = page.index("column 1")
+        one_index = page.index("one")
+        col2_index = page.index("column 2")
+        two_index = page.index("two")
+        col3_index = page.index("column 3")
+        three_index = page.index("three")
+        self.assertLess(col1_index, one_index)
+        self.assertLess(one_index, col2_index)
+        self.assertLess(col2_index, two_index)
+        self.assertLess(two_index, col3_index)
+        self.assertLess(col3_index, three_index)
+
     def test_no_doc_to_read(self):
         class BrokenPDF(pdftotext.PDF):
             def __init__(self):
@@ -222,3 +237,37 @@ class RawTest(unittest.TestCase):
         pdf_default = pdftotext.PDF(get_file(filename))
         pdf_raw_false = pdftotext.PDF(get_file(filename), raw=False)
         self.assertEqual(pdf_default[0], pdf_raw_false[0])
+
+
+class PhysicalTest(unittest.TestCase):
+    """Test reading in physical layout."""
+
+    def test_physical_vs_not(self):
+        filename = "three_columns.pdf"
+        pdf = pdftotext.PDF(get_file(filename))
+        physical_pdf = pdftotext.PDF(get_file(filename), physical=True)
+        self.assertNotEqual(pdf[0], physical_pdf[0])
+
+    def test_physical_invalid_type(self):
+        with self.assertRaises(TypeError):
+            pdftotext.PDF(get_file("blank.pdf"), physical="")
+
+    def test_physical_invalid_value(self):
+        with self.assertRaises(ValueError):
+            pdftotext.PDF(get_file("blank.pdf"), physical=-10)
+
+    def test_physical_is_not_default(self):
+        filename = "three_columns.pdf"
+        pdf_default = pdftotext.PDF(get_file(filename))
+        pdf_physical_false = pdftotext.PDF(get_file(filename), physical=False)
+        self.assertEqual(pdf_default[0], pdf_physical_false[0])
+
+    def test_raw_and_physical(self):
+        with self.assertRaises(ValueError):
+            pdftotext.PDF(get_file("blank.pdf"), raw=True, physical=True)
+
+    def test_raw_vs_physical(self):
+        filename = "three_columns.pdf"
+        pdf_raw = pdftotext.PDF(get_file(filename), raw=True)
+        pdf_physical = pdftotext.PDF(get_file(filename), physical=True)
+        self.assertNotEqual(pdf_raw[0], pdf_physical[0])

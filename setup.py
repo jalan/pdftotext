@@ -46,6 +46,7 @@ if platform.system() == "Darwin":
 macros = [
     ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
     ("POPPLER_CPP_AT_LEAST_0_58_0", int(poppler_cpp_at_least("0.58.0"))),
+    ("POPPLER_CPP_AT_LEAST_0_88_0", int(poppler_cpp_at_least("0.88.0"))),
 ]
 
 module = Extension(

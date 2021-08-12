@@ -16,6 +16,7 @@ typedef struct {
     PyObject_HEAD
     int page_count;
     bool raw;
+    bool physical;
     PyObject* data;
     poppler::document* doc;
 } PDF;
@@ -23,12 +24,13 @@ typedef struct {
 static void PDF_clear(PDF* self) {
     self->page_count = 0;
     self->raw = false;
+    self->physical = false;
     delete self->doc;
     self->doc = NULL;
     Py_CLEAR(self->data);
 }
 
-static int PDF_set_raw(PDF* self, int raw) {
+static int PDF_set_layout(PDF* self, int raw, int physical) {
     if (raw == 0) {
         self->raw = false;
     } else if (raw == 1) {
@@ -37,6 +39,21 @@ static int PDF_set_raw(PDF* self, int raw) {
         PyErr_Format(PyExc_ValueError, "a boolean is required");
         return -1;
     }
+
+    if (physical == 0) {
+        self->physical = false;
+    } else if (physical == 1) {
+        self->physical = true;
+    } else {
+        PyErr_Format(PyExc_ValueError, "a boolean is required");
+        return -1;
+    }
+
+    if (self->raw && self->physical) {
+        PyErr_Format(PyExc_ValueError, "cannot use both 'raw' and 'physical'");
+        return -1;
+    }
+
     return 0;
 }
 
@@ -83,13 +100,14 @@ static int PDF_init(PDF* self, PyObject* args, PyObject* kwds) {
     PyObject* pdf_file;
     char* password = (char*)"";
     int raw = 0;
-    static char* kwlist[] = {(char*)"pdf_file", (char*)"password", (char*)"raw", NULL};
+    int physical = 0;
+    static char* kwlist[] = {(char*)"pdf_file", (char*)"password", (char*)"raw", (char*)"physical", NULL};
 
     PDF_clear(self);
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|si", kwlist, &pdf_file, &password, &raw)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|sii", kwlist, &pdf_file, &password, &raw, &physical)) {
         goto error;
     }
-    if (PDF_set_raw(self, raw) < 0) {
+    if (PDF_set_layout(self, raw, physical) < 0) {
         goto error;
     }
     if (PDF_load_data(self, pdf_file) < 0) {
@@ -125,9 +143,16 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
         return PyErr_Format(PdftotextError, "poppler error creating page");
     }
 
+    #if POPPLER_CPP_AT_LEAST_0_88_0
+    layout_mode = poppler::page::non_raw_non_physical_layout;
+    #else
     layout_mode = poppler::page::physical_layout;
+    #endif
+
     if (self->raw) {
         layout_mode = poppler::page::raw_order_layout;
+    } else if (self->physical) {
+        layout_mode = poppler::page::physical_layout;
     }
 
     #if POPPLER_CPP_AT_LEAST_0_58_0
@@ -167,55 +192,59 @@ static PySequenceMethods PDF_sequence_methods = {
 
 static PyTypeObject PDFType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "pdftotext.PDF",                                                // tp_name
-    sizeof(PDF),                                                    // tp_basicsize
-    0,                                                              // tp_itemsize
-    (destructor)PDF_dealloc,                                        // tp_dealloc
-    0,                                                              // tp_print
-    0,                                                              // tp_getattr
-    0,                                                              // tp_setattr
-    0,                                                              // tp_reserved
-    0,                                                              // tp_repr
-    0,                                                              // tp_as_number
-    &PDF_sequence_methods,                                          // tp_as_sequence
-    0,                                                              // tp_as_mapping
-    0,                                                              // tp_hash
-    0,                                                              // tp_call
-    0,                                                              // tp_str
-    0,                                                              // tp_getattro
-    0,                                                              // tp_setattro
-    0,                                                              // tp_as_buffer
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,                       // tp_flags
-    "PDF(pdf_file, password=\"\", raw=False)\n"
+    "pdftotext.PDF",                                       // tp_name
+    sizeof(PDF),                                           // tp_basicsize
+    0,                                                     // tp_itemsize
+    (destructor)PDF_dealloc,                               // tp_dealloc
+    0,                                                     // tp_print
+    0,                                                     // tp_getattr
+    0,                                                     // tp_setattr
+    0,                                                     // tp_reserved
+    0,                                                     // tp_repr
+    0,                                                     // tp_as_number
+    &PDF_sequence_methods,                                 // tp_as_sequence
+    0,                                                     // tp_as_mapping
+    0,                                                     // tp_hash
+    0,                                                     // tp_call
+    0,                                                     // tp_str
+    0,                                                     // tp_getattro
+    0,                                                     // tp_setattro
+    0,                                                     // tp_as_buffer
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,              // tp_flags
+    "PDF(pdf_file, password=\"\", raw=False, physical=False)\n"
     "\n"
     "Args:\n"
     "    pdf_file: A file opened for reading in binary mode.\n"
     "    password: Unlocks the document, if required. Either the owner\n"
     "        password or the user password works.\n"
     "    raw: If True, page text is output in the order it appears in the\n"
-    "        content stream, rather than in the order it appears on the\n"
-    "        page.\n"
+    "        content stream.\n"
+    "    physical: If True, page text is output in the order it appears on\n"
+    "        the page, regardless of columns or other layout features.\n"
+    "\n"
+    "    Usually, the most readable output is achieved by using the default\n"
+    "    mode, rather than raw or physical.\n"
     "\n"
     "Example:\n"
     "    with open(\"doc.pdf\", \"rb\") as f:\n"
     "        pdf = PDF(f)\n"
     "    for page in pdf:\n"
-    "        print(page)",                                          // tp_doc
-    0,                                                              // tp_traverse
-    0,                                                              // tp_clear
-    0,                                                              // tp_richcompare
-    0,                                                              // tp_weaklistoffset
-    0,                                                              // tp_iter
-    0,                                                              // tp_iternext
-    0,                                                              // tp_methods
-    0,                                                              // tp_members
-    0,                                                              // tp_getset
-    0,                                                              // tp_base
-    0,                                                              // tp_dict
-    0,                                                              // tp_descr_get
-    0,                                                              // tp_descr_set
-    0,                                                              // tp_dictoffset
-    (initproc)PDF_init,                                             // tp_init
+    "        print(page)",                                 // tp_doc
+    0,                                                     // tp_traverse
+    0,                                                     // tp_clear
+    0,                                                     // tp_richcompare
+    0,                                                     // tp_weaklistoffset
+    0,                                                     // tp_iter
+    0,                                                     // tp_iternext
+    0,                                                     // tp_methods
+    0,                                                     // tp_members
+    0,                                                     // tp_getset
+    0,                                                     // tp_base
+    0,                                                     // tp_dict
+    0,                                                     // tp_descr_get
+    0,                                                     // tp_descr_set
+    0,                                                     // tp_dictoffset
+    (initproc)PDF_init,                                    // tp_init
 };
 
 #if POPPLER_CPP_AT_LEAST_0_30_0
