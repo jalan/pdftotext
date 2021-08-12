@@ -121,6 +121,7 @@ class GetItemTest(unittest.TestCase):
         self.assertIn("c", result)
         self.assertIn("d", result)
 
+    @unittest.skip("skip until all test runners have poppler >= 0.88")
     def test_read_columns(self):
         pdf = pdftotext.PDF(get_file("three_columns.pdf"))
         page = pdf[0]
@@ -242,6 +243,7 @@ class RawTest(unittest.TestCase):
 class PhysicalTest(unittest.TestCase):
     """Test reading in physical layout."""
 
+    @unittest.skip("skip until all test runners have poppler >= 0.88")
     def test_physical_vs_not(self):
         filename = "three_columns.pdf"
         pdf = pdftotext.PDF(get_file(filename))
