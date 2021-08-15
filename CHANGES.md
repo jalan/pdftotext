@@ -1,5 +1,12 @@
 # Changes
 
+## 2.2.0 - 2021-08-15
+
+ - Change the default layout behavior to match what poppler recommends
+ - Add an option to use physical layout mode, which matches the previous
+   default behavior
+
+
 ## 2.1.6 - 2021-05-14
 
  - Fix an issue with detecting the bounding box on some pages
