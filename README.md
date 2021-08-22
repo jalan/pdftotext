@@ -61,17 +61,23 @@ brew install pkg-config poppler python
 
 ### Windows
 
-Currently tested only when using conda:
+ - Install using `conda`. Make sure you hae anaconda installed and its working.
 
- - Install the Microsoft Visual C++ Build Tools
- - Install poppler through conda:
-   ```
-   conda install -c conda-forge poppler
-   ```
-
-
-## Install
-
-```
-pip install pdftotext
-```
+    - Install the Microsoft Visual C++ Build Tools
+    - Install poppler through conda:
+    ```
+    conda install -c conda-forge poppler
+    ```
+    - Install with pip
+    ```
+    pip install pdftotext
+    ```
+ - Install using `pip`. If you have installed python official binary and want to
+   install `pdftotext`, make sure you have `Visual Studio` installed along with
+   c/c++ build tools. Also you will need to download `poppler` binaries and
+   configure your system. You can download `poppler` windows binaries from here -
+   [https://github.com/oschwartz10612/poppler-windows](https://github.com/oschwartz10612/poppler-windows). Download a release zip file. Extract it somewhere. Set the full path of the extracted folder (where bin, include
+   and lib directories are in) as `POPPLER_PREFIX` environmental variable. 
+   And also add this to your `PATH` variable - `%POPPLER_PREFIX%\bin` . Then 
+   install via `pip` or you can directly download the source code of this repo
+   and run `python setup.py install` to install it.
