@@ -19,6 +19,27 @@ def poppler_cpp_at_least(version):
     return True
 
 
+def brew_poppler_include():
+    """Find the poppler include directory from brew."""
+    try:
+        brew_list = subprocess.check_output(["brew", "list", "poppler"])
+        try:
+            brew_list = brew_list.decode()
+        except (UnicodeDecodeError, AttributeError):
+            pass
+        include_dir = None
+        library_dir = None
+        for brew_file_line in brew_list.split("\n"):
+            brew_file = brew_file_line.split("(")[0].strip()
+            if brew_file.endswith("include/poppler/OptionalContent.h"):
+                include_dir = os.path.dirname(os.path.dirname(brew_file))
+            elif brew_file.endswith(".dylib"):
+                library_dir = os.path.dirname(brew_file)
+        return include_dir, library_dir
+    except subprocess.CalledProcessError:
+        return None, None
+
+
 include_dirs = None
 library_dirs = None
 
@@ -42,6 +63,11 @@ extra_link_args = []
 if platform.system() == "Darwin":
     extra_compile_args += ["-mmacosx-version-min=10.9", "-std=c++11"]
     extra_link_args += ["-mmacosx-version-min=10.9"]
+    brew_include, brew_library = brew_poppler_include()
+    if brew_include is not None:
+        include_dirs.append(brew_include)
+    if brew_library is not None:
+        library_dirs.append(brew_library)
 
 macros = [
     ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
