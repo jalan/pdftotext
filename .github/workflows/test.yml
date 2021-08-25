@@ -1,0 +1,32 @@
+name: test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - macos-10.15
+          - macos-11
+          - ubuntu-18.04
+          - ubuntu-20.04
+        python-version:
+          - '2.7'
+          - '3.6'
+          - '3.7'
+          - '3.8'
+          - '3.9'
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install linux dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: sudo apt install --yes libpoppler-cpp-dev pkg-config
+      - name: Install macOS dependencies
+        if: startsWith(matrix.os, 'mac')
+        run: brew install pkg-config poppler
+      - name: Test
+        run: python setup.py test
