@@ -1,6 +1,7 @@
 name: test
 on: [push, pull_request]
 jobs:
+
   test:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -30,3 +31,15 @@ jobs:
         run: brew install pkg-config poppler
       - name: Test
         run: python setup.py test
+
+  format:
+    runs-on: ubuntu-20.04
+    name: Format
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: sudo apt install --yes black clang-format
+      - name: Check python formatting
+        run: black --check .
+      - name: Check C++ formatting
+        run: clang-format --dry-run --Werror pdftotext.cpp
