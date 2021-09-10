@@ -9,7 +9,6 @@
 #include <string>
 #include <vector>
 
-
 static PyObject* PdftotextError;
 
 typedef struct {
@@ -58,11 +57,11 @@ static int PDF_set_layout(PDF* self, int raw, int physical) {
 }
 
 static int PDF_load_data(PDF* self, PyObject* file) {
-    #if PY_MAJOR_VERSION >= 3
+#if PY_MAJOR_VERSION >= 3
     self->data = PyObject_CallMethod(file, "read", NULL);
-    #else
+#else
     self->data = PyObject_CallMethod(file, (char*)"read", NULL);
-    #endif
+#endif
     if (self->data == NULL) {
         return -1;
     }
@@ -143,11 +142,11 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
         return PyErr_Format(PdftotextError, "poppler error creating page");
     }
 
-    #if POPPLER_CPP_AT_LEAST_0_88_0
+#if POPPLER_CPP_AT_LEAST_0_88_0
     layout_mode = poppler::page::non_raw_non_physical_layout;
-    #else
+#else
     layout_mode = poppler::page::physical_layout;
-    #endif
+#endif
 
     if (self->raw) {
         layout_mode = poppler::page::raw_order_layout;
@@ -155,15 +154,15 @@ static PyObject* PDF_read_page(PDF* self, int page_number) {
         layout_mode = poppler::page::physical_layout;
     }
 
-    #if POPPLER_CPP_AT_LEAST_0_58_0
+#if POPPLER_CPP_AT_LEAST_0_58_0
     page_utf8 = page->text(poppler::rectf(0, 0, 0, 0), layout_mode).to_utf8();
-    #else
+#else
     // Workaround for poppler bug #94517, fixed in poppler 0.58.0, released 2017-09-01
     const poppler::rectf rect = page->page_rect();
     const int min = std::min(rect.left(), rect.top());
     const int max = std::max(rect.right(), rect.bottom());
     page_utf8 = page->text(poppler::rectf(min, min, max, max), layout_mode).to_utf8();
-    #endif
+#endif
 
     delete page;
     return PyUnicode_DecodeUTF8(page_utf8.data(), page_utf8.size(), NULL);
@@ -184,33 +183,33 @@ static PyObject* PDF_getitem(PyObject* obj, Py_ssize_t i) {
 }
 
 static PySequenceMethods PDF_sequence_methods = {
-    PDF_len,      // sq_length (__len__)
-    0,            // sq_concat
-    0,            // sq_repeat
-    PDF_getitem,  // sq_item (__getitem__)
+    PDF_len,     // sq_length (__len__)
+    0,           // sq_concat
+    0,           // sq_repeat
+    PDF_getitem, // sq_item (__getitem__)
 };
 
 static PyTypeObject PDFType = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    "pdftotext.PDF",                                       // tp_name
-    sizeof(PDF),                                           // tp_basicsize
-    0,                                                     // tp_itemsize
-    (destructor)PDF_dealloc,                               // tp_dealloc
-    0,                                                     // tp_print
-    0,                                                     // tp_getattr
-    0,                                                     // tp_setattr
-    0,                                                     // tp_reserved
-    0,                                                     // tp_repr
-    0,                                                     // tp_as_number
-    &PDF_sequence_methods,                                 // tp_as_sequence
-    0,                                                     // tp_as_mapping
-    0,                                                     // tp_hash
-    0,                                                     // tp_call
-    0,                                                     // tp_str
-    0,                                                     // tp_getattro
-    0,                                                     // tp_setattro
-    0,                                                     // tp_as_buffer
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,              // tp_flags
+    PyVarObject_HEAD_INIT(NULL, 0)            // header
+    "pdftotext.PDF",                          // tp_name
+    sizeof(PDF),                              // tp_basicsize
+    0,                                        // tp_itemsize
+    (destructor)PDF_dealloc,                  // tp_dealloc
+    0,                                        // tp_print
+    0,                                        // tp_getattr
+    0,                                        // tp_setattr
+    0,                                        // tp_reserved
+    0,                                        // tp_repr
+    0,                                        // tp_as_number
+    &PDF_sequence_methods,                    // tp_as_sequence
+    0,                                        // tp_as_mapping
+    0,                                        // tp_hash
+    0,                                        // tp_call
+    0,                                        // tp_str
+    0,                                        // tp_getattro
+    0,                                        // tp_setattro
+    0,                                        // tp_as_buffer
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, // tp_flags
     "PDF(pdf_file, password=\"\", raw=False, physical=False)\n"
     "\n"
     "Args:\n"
@@ -229,22 +228,22 @@ static PyTypeObject PDFType = {
     "    with open(\"doc.pdf\", \"rb\") as f:\n"
     "        pdf = PDF(f)\n"
     "    for page in pdf:\n"
-    "        print(page)",                                 // tp_doc
-    0,                                                     // tp_traverse
-    0,                                                     // tp_clear
-    0,                                                     // tp_richcompare
-    0,                                                     // tp_weaklistoffset
-    0,                                                     // tp_iter
-    0,                                                     // tp_iternext
-    0,                                                     // tp_methods
-    0,                                                     // tp_members
-    0,                                                     // tp_getset
-    0,                                                     // tp_base
-    0,                                                     // tp_dict
-    0,                                                     // tp_descr_get
-    0,                                                     // tp_descr_set
-    0,                                                     // tp_dictoffset
-    (initproc)PDF_init,                                    // tp_init
+    "        print(page)", // tp_doc
+    0,                     // tp_traverse
+    0,                     // tp_clear
+    0,                     // tp_richcompare
+    0,                     // tp_weaklistoffset
+    0,                     // tp_iter
+    0,                     // tp_iternext
+    0,                     // tp_methods
+    0,                     // tp_members
+    0,                     // tp_getset
+    0,                     // tp_base
+    0,                     // tp_dict
+    0,                     // tp_descr_get
+    0,                     // tp_descr_set
+    0,                     // tp_dictoffset
+    (initproc)PDF_init,    // tp_init
 };
 
 #if POPPLER_CPP_AT_LEAST_0_30_0
@@ -274,8 +273,7 @@ PyMODINIT_FUNC PyInit_pdftotext() {
     Py_INCREF(&PDFType);
     PyModule_AddObject(module, "PDF", (PyObject*)&PDFType);
 
-    PdftotextError = PyErr_NewExceptionWithDoc(
-        "pdftotext.Error", "PDF error.", NULL, NULL);
+    PdftotextError = PyErr_NewExceptionWithDoc("pdftotext.Error", "PDF error.", NULL, NULL);
     Py_INCREF(PdftotextError);
     PyModule_AddObject(module, "Error", PdftotextError);
 
@@ -302,8 +300,7 @@ PyMODINIT_FUNC initpdftotext() {
     Py_INCREF(&PDFType);
     PyModule_AddObject(module, "PDF", (PyObject*)&PDFType);
 
-    PdftotextError = PyErr_NewExceptionWithDoc(
-        (char*)"pdftotext.Error", (char*)"PDF error.", NULL, NULL);
+    PdftotextError = PyErr_NewExceptionWithDoc((char*)"pdftotext.Error", (char*)"PDF error.", NULL, NULL);
     Py_INCREF(PdftotextError);
     PyModule_AddObject(module, "Error", PdftotextError);
 
