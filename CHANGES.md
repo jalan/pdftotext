@@ -1,5 +1,10 @@
 # Changes
 
+## 2.2.1 - 2021-10-01
+
+ - Improve support for building on Apple M1 systems
+
+
 ## 2.2.0 - 2021-08-15
 
  - Change the default layout behavior to match what poppler recommends
