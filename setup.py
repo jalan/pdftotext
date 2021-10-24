@@ -13,19 +13,18 @@ def poppler_cpp_at_least(version):
         )
     except subprocess.CalledProcessError:
         return False
-    except OSError:
+    except (FileNotFoundError, OSError):
         print("WARNING: pkg-config not found--guessing at poppler version.")
         print("         If the build fails, install pkg-config and try again.")
     return True
 
 
 def brew_poppler_include():
-    """Find the poppler include directory from brew."""
     try:
         brew_list = subprocess.check_output(["brew", "list", "poppler"])
         try:
             brew_list = brew_list.decode()
-        except (UnicodeDecodeError, AttributeError):
+        except (AttributeError, UnicodeDecodeError):
             pass
         include_dir = None
         library_dir = None
@@ -36,7 +35,7 @@ def brew_poppler_include():
             elif brew_file.endswith(".dylib"):
                 library_dir = os.path.dirname(brew_file)
         return include_dir, library_dir
-    except subprocess.CalledProcessError:
+    except (FileNotFoundError, OSError, subprocess.CalledProcessError):
         return None, None
 
 
