@@ -8,14 +8,14 @@ jobs:
       matrix:
         python_2.7:
           python.version: "2.7"
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - task: UsePythonVersion@0
         inputs:
@@ -36,14 +36,14 @@ jobs:
       matrix:
         python_2.7:
           python.version: "2.7"
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - task: UsePythonVersion@0
         inputs:
@@ -62,14 +62,14 @@ jobs:
       vmImage: "macOS-10.14"
     strategy:
       matrix:
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - script: sudo chown -R $USER $CONDA
         displayName: "Fix ownership"
@@ -93,14 +93,14 @@ jobs:
       vmImage: "macOS-10.15"
     strategy:
       matrix:
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - script: sudo chown -R $USER $CONDA
         displayName: "Fix ownership"
@@ -126,14 +126,14 @@ jobs:
       matrix:
         python_2.7:
           python.version: "2.7"
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - task: UsePythonVersion@0
         inputs:
@@ -156,14 +156,14 @@ jobs:
       matrix:
         python_2.7:
           python.version: "2.7"
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - task: UsePythonVersion@0
         inputs:
@@ -184,14 +184,14 @@ jobs:
       vmImage: "ubuntu-18.04"
     strategy:
       matrix:
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - script: echo "##vso[task.prependpath]$CONDA/bin"
         displayName: "Add conda to path"
@@ -215,14 +215,14 @@ jobs:
       vmImage: "ubuntu-20.04"
     strategy:
       matrix:
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - script: echo "##vso[task.prependpath]$CONDA/bin"
         displayName: "Add conda to path"
@@ -246,14 +246,14 @@ jobs:
       vmImage: "vs2017-win2016"
     strategy:
       matrix:
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
         displayName: "Add conda to path"
@@ -275,14 +275,14 @@ jobs:
       vmImage: "windows-2019"
     strategy:
       matrix:
-        python_3.6:
-          python.version: "3.6"
         python_3.7:
           python.version: "3.7"
         python_3.8:
           python.version: "3.8"
         python_3.9:
           python.version: "3.9"
+        python_3.10:
+          python.version: "3.10"
     steps:
       - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
         displayName: "Add conda to path"
