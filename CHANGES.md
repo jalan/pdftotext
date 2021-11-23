@@ -1,5 +1,10 @@
 # Changes
 
+## 2.2.2 - 2021-11-23
+
+ - Fix building on macOS without brew present
+
+
 ## 2.2.1 - 2021-10-01
 
  - Improve support for building on Apple M1 systems
