@@ -36,7 +36,7 @@ def brew_poppler_include():
             elif brew_file.endswith(".dylib"):
                 library_dir = os.path.dirname(brew_file)
         return include_dir, library_dir
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, OSError):
         return None, None
 
 
