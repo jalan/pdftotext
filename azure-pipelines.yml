@@ -1,34 +1,6 @@
 jobs:
 
   - job:
-    displayName: "macOS_10.14"
-    pool:
-      vmImage: "macOS-10.14"
-    strategy:
-      matrix:
-        python_2.7:
-          python.version: "2.7"
-        python_3.7:
-          python.version: "3.7"
-        python_3.8:
-          python.version: "3.8"
-        python_3.9:
-          python.version: "3.9"
-        python_3.10:
-          python.version: "3.10"
-    steps:
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: "$(python.version)"
-        displayName: "Use Python $(python.version)"
-      - script: brew install pkg-config poppler
-        displayName: "Install dependencies"
-      - script: |
-          python --version
-          python setup.py test
-        displayName: "Test"
-
-  - job:
     displayName: "macOS_10.15"
     pool:
       vmImage: "macOS-10.15"
@@ -52,37 +24,6 @@ jobs:
       - script: brew install pkg-config poppler
         displayName: "Install dependencies"
       - script: |
-          python --version
-          python setup.py test
-        displayName: "Test"
-
-  - job:
-    displayName: "macOS_10.14 conda"
-    pool:
-      vmImage: "macOS-10.14"
-    strategy:
-      matrix:
-        python_3.7:
-          python.version: "3.7"
-        python_3.8:
-          python.version: "3.8"
-        python_3.9:
-          python.version: "3.9"
-        python_3.10:
-          python.version: "3.10"
-    steps:
-      - script: sudo chown -R $USER $CONDA
-        displayName: "Fix ownership"
-      - script: echo "##vso[task.prependpath]$CONDA/bin"
-        displayName: "Add conda to path"
-      - script: |
-          conda update --yes conda
-          conda config --add channels conda-forge
-          conda config --set channel_priority strict
-          conda create --yes --name testenv python=$PYTHON_VERSION pkg-config poppler
-        displayName: "Install dependencies"
-      - script: |
-          source activate testenv
           python --version
           python setup.py test
         displayName: "Test"
@@ -241,9 +182,9 @@ jobs:
         displayName: "Test"
 
   - job:
-    displayName: "windows_2016 conda"
+    displayName: "windows_2019 conda"
     pool:
-      vmImage: "vs2017-win2016"
+      vmImage: "windows-2019"
     strategy:
       matrix:
         python_3.7:
@@ -270,9 +211,9 @@ jobs:
         displayName: "Test"
 
   - job:
-    displayName: "windows_2019 conda"
+    displayName: "windows_2022 conda"
     pool:
-      vmImage: "windows-2019"
+      vmImage: "windows-2022"
     strategy:
       matrix:
         python_3.7:
