@@ -1,2 +1,2 @@
-include LICENSE README.md
+include LICENSE
 recursive-include tests *.pdf *.py
