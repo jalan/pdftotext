@@ -1,8 +1,7 @@
 # pdftotext
 
-[![PyPI Status](https://img.shields.io/pypi/v/pdftotext.svg)](https://pypi.python.org/pypi/pdftotext)
-[![Azure Status](https://dev.azure.com/jalanpalmer/jalanpalmer/_apis/build/status/jalan.pdftotext?branchName=master)](https://dev.azure.com/jalanpalmer/jalanpalmer/_build/latest?definitionId=1&branchName=master)
-[![Coverage Status](https://coveralls.io/repos/github/jalan/pdftotext/badge.svg?branch=master)](https://coveralls.io/github/jalan/pdftotext?branch=master)
+[![PyPI](https://img.shields.io/pypi/v/pdftotext.svg)](https://pypi.python.org/pypi/pdftotext)
+[![Tests](https://github.com/jalan/pdftotext/actions/workflows/tests.yml/badge.svg)](https://github.com/jalan/pdftotext/actions)
 [![Downloads](https://pepy.tech/badge/pdftotext)](https://pepy.tech/project/pdftotext)
 
 Simple PDF text extraction

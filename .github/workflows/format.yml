@@ -1,0 +1,14 @@
+name: format
+on: [push, pull_request]
+jobs:
+  format:
+    runs-on: ubuntu-20.04
+    name: Check formatting
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: sudo apt install --yes black clang-format
+      - name: Check python formatting
+        run: black --check .
+      - name: Check C++ formatting
+        run: clang-format --dry-run --Werror pdftotext.cpp
