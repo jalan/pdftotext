@@ -2,10 +2,10 @@ name: format
 on: [push, pull_request]
 jobs:
   format:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     name: Check formatting
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: sudo apt install --yes black clang-format
       - name: Check python formatting
