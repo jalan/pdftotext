@@ -1,4 +1,4 @@
-"""Tests for the PDF class."""
+"""Tests for the pdftotext module."""
 
 import io
 import pkg_resources
