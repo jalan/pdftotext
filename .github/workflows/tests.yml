@@ -7,26 +7,29 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-11
-          - macos-12
+          - macos-13
+          - macos-14
           - ubuntu-20.04
           - ubuntu-22.04
         python-version:
-          - '2.7'
-          - '3.10'
           - '3.11'
+          - '3.12'
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies (linux)
         if: runner.os == 'Linux'
-        run: sudo apt install --yes libpoppler-cpp-dev pkg-config
+        run: |
+          sudo apt install --yes libpoppler-cpp-dev pkg-config
+          pip install setuptools
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS'
-        run: brew install pkg-config poppler
+        run: |
+          brew install pkg-config poppler
+          pip install setuptools
       - name: Install
         run: pip install --verbose .
       - name: Test
@@ -38,17 +41,18 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-12
+          - macos-13
+          - macos-14
           - ubuntu-22.04
           - windows-2022
     name: Conda on ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
           channels: conda-forge
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Configure conda
         shell: bash -l {0}
         run: conda config --remove channels defaults

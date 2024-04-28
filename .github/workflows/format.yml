@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-22.04
     name: Check formatting
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: sudo apt install --yes black clang-format
       - name: Check python formatting
