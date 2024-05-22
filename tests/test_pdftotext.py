@@ -2,6 +2,7 @@
 
 import io
 import pkg_resources
+import subprocess
 import unittest
 
 import pdftotext
@@ -31,6 +32,12 @@ for file_name in file_names:
 def get_file(name):
     """Return a copy of the requested test file as if it were just opened."""
     return io.BytesIO(test_files[name].getvalue())
+
+
+def old_poppler():
+    """Check whether the poppler in use is too old for certain tests."""
+    version = [int(part) for part in pdftotext.poppler_version().split(".")]
+    return version < [0, 88], "poppler version is too old"
 
 
 class InitTest(unittest.TestCase):
@@ -121,7 +128,7 @@ class GetItemTest(unittest.TestCase):
         self.assertIn("c", result)
         self.assertIn("d", result)
 
-    @unittest.skip("skip until all test runners have poppler >= 0.88")
+    @unittest.skipIf(*old_poppler())
     def test_read_columns(self):
         pdf = pdftotext.PDF(get_file("three_columns.pdf"))
         page = pdf[0]
@@ -243,7 +250,7 @@ class RawTest(unittest.TestCase):
 class PhysicalTest(unittest.TestCase):
     """Test reading in physical layout."""
 
-    @unittest.skip("skip until all test runners have poppler >= 0.88")
+    @unittest.skipIf(*old_poppler())
     def test_physical_vs_not(self):
         filename = "three_columns.pdf"
         pdf = pdftotext.PDF(get_file(filename))
@@ -273,3 +280,15 @@ class PhysicalTest(unittest.TestCase):
         pdf_raw = pdftotext.PDF(get_file(filename), raw=True)
         pdf_physical = pdftotext.PDF(get_file(filename), physical=True)
         self.assertNotEqual(pdf_raw[0], pdf_physical[0])
+
+
+class VersionTest(unittest.TestCase):
+    """Test the poppler_version function."""
+
+    def test_poppler_version(self):
+        poppler_version = (
+            subprocess.check_output(["pkg-config", "--modversion", "poppler-cpp"])
+            .decode()
+            .strip()
+        )
+        self.assertEqual(pdftotext.poppler_version(), poppler_version)

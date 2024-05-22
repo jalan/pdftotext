@@ -3,6 +3,7 @@
 #include <poppler/cpp/poppler-document.h>
 #include <poppler/cpp/poppler-global.h>
 #include <poppler/cpp/poppler-page.h>
+#include <poppler/cpp/poppler-version.h>
 
 #include <algorithm>
 #include <climits>
@@ -250,11 +251,27 @@ static PyTypeObject PDFType = {
 static void do_nothing(const std::string&, void*) {}
 #endif
 
+static PyObject* poppler_version(PyObject* self, PyObject* args) {
+#if PY_MAJOR_VERSION >= 3
+    return PyUnicode_FromString(poppler::version_string().c_str());
+#else
+    return PyString_FromString(poppler::version_string().c_str());
+#endif
+}
+
+static PyMethodDef Methods[] = {
+    {
+        "poppler_version",
+        poppler_version,
+        METH_NOARGS,
+        "Get the version of the poppler library in use.",
+    },
+    {NULL, NULL, 0, NULL}, // sentinel
+};
+
 #if PY_MAJOR_VERSION >= 3
 static PyModuleDef pdftotextmodule = {
-    PyModuleDef_HEAD_INIT,
-    "pdftotext",
-    "Simple PDF text extraction.",
+    PyModuleDef_HEAD_INIT, "pdftotext", "Simple PDF text extraction.", -1, Methods,
 };
 
 PyMODINIT_FUNC PyInit_pdftotext() {
@@ -292,7 +309,7 @@ PyMODINIT_FUNC initpdftotext() {
         return;
     }
 
-    module = Py_InitModule3("pdftotext", NULL, "Simple PDF text extraction.");
+    module = Py_InitModule3("pdftotext", Methods, "Simple PDF text extraction.");
     if (module == NULL) {
         return;
     }

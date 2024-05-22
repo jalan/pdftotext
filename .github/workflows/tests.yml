@@ -33,7 +33,7 @@ jobs:
       - name: Install
         run: pip install --verbose .
       - name: Test
-        run: python -m unittest discover --verbose --start-directory tests
+        run: python -m unittest discover --verbose
 
   test_conda:
     runs-on: ${{ matrix.os }}
@@ -64,4 +64,4 @@ jobs:
         run: pip install --verbose .
       - name: Test
         shell: bash -l {0}
-        run: python -m unittest discover --verbose --start-directory tests
+        run: python -m unittest discover --verbose
