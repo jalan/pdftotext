@@ -47,7 +47,7 @@ class InitTest(unittest.TestCase):
             pdf.__init__("wrong")
 
     def test_init_file_in_text_mode(self):
-        text_file = io.StringIO(u"wrong")
+        text_file = io.StringIO("wrong")
         with self.assertRaises((pdftotext.Error, TypeError)):
             pdftotext.PDF(text_file)
 

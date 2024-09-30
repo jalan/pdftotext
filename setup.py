@@ -98,10 +98,5 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/jalan/pdftotext",
     license="MIT",
-    classifiers=[
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 3",
-    ],
     ext_modules=[module],
-    test_suite="tests",
 )
