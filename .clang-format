@@ -1,6 +1,5 @@
 BasedOnStyle: llvm
 ColumnLimit: 120
-IndentPPDirectives: BeforeHash
 IndentWidth: 4
 PointerAlignment: Left
 StatementMacros: [PyObject_HEAD]
