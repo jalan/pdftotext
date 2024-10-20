@@ -51,8 +51,8 @@ if platform.system() in ["Darwin", "FreeBSD", "OpenBSD"]:
 if platform.system() == "Windows":
     conda_prefix = os.getenv("CONDA_PREFIX")
     if conda_prefix is not None:
-        include_dirs = [os.path.join(conda_prefix, r"Library\include")]
-        library_dirs = [os.path.join(conda_prefix, r"Library\lib")]
+        include_dirs = [os.path.join(conda_prefix, "Library\include")]
+        library_dirs = [os.path.join(conda_prefix, "Library\lib")]
 
 extra_compile_args = ["-Wall"]
 extra_link_args = []
@@ -69,7 +69,6 @@ if platform.system() == "Darwin":
         library_dirs.append(brew_library)
 
 macros = [
-    ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
     ("POPPLER_CPP_AT_LEAST_0_58_0", int(poppler_cpp_at_least("0.58.0"))),
     ("POPPLER_CPP_AT_LEAST_0_88_0", int(poppler_cpp_at_least("0.88.0"))),
 ]
