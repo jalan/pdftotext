@@ -35,8 +35,8 @@ print("\n\n".join(pdf))
 
 ## OS Dependencies
 
-These instructions assume you're using Python 3 on a recent OS. Package names
-may differ for an older OS.
+These instructions assume you're on a recent OS. Package names may differ for an
+older OS.
 
 ### Debian, Ubuntu, and friends
 

@@ -1,5 +1,11 @@
 # Changes
 
+## 3.0.0 - 2024-12-06
+
+ - Drop support for Python 2
+ - Drop support for Poppler < 0.30.0, which came out in 2015
+
+
 ## 2.2.2 - 2021-11-23
 
  - Fix building on macOS without brew present
