@@ -2,6 +2,7 @@
 
 import io
 import pkg_resources
+import subprocess
 import unittest
 
 import pdftotext
@@ -271,3 +272,15 @@ class PhysicalTest(unittest.TestCase):
         pdf_raw = pdftotext.PDF(get_file(filename), raw=True)
         pdf_physical = pdftotext.PDF(get_file(filename), physical=True)
         self.assertNotEqual(pdf_raw[0], pdf_physical[0])
+
+
+class VersionTest(unittest.TestCase):
+    """Test the poppler_version function."""
+
+    def test_poppler_version(self):
+        poppler_version = (
+            subprocess.check_output(["pkg-config", "--modversion", "poppler-cpp"])
+            .decode()
+            .strip()
+        )
+        self.assertEqual(pdftotext.poppler_version(), poppler_version)
