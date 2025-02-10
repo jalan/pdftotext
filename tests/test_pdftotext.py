@@ -1,31 +1,17 @@
 """Tests for the pdftotext module."""
 
+import importlib.resources
 import io
-import pkg_resources
 import unittest
 
 import pdftotext
 
 
-file_names = [
-    "abcde.pdf",
-    "blank.pdf",
-    "both_passwords.pdf",
-    "corrupt.pdf",
-    "corrupt_page.pdf",
-    "landscape_0.pdf",
-    "landscape_90.pdf",
-    "portrait.pdf",
-    "table.pdf",
-    "three_columns.pdf",
-    "two_pages.pdf",
-    "user_password.pdf",
-]
 test_files = {}
-for file_name in file_names:
-    file_path = pkg_resources.resource_filename("tests", file_name)
-    with open(file_path, "rb") as open_file:
-        test_files[file_name] = io.BytesIO(open_file.read())
+directory = importlib.resources.files("tests")
+for f in directory.iterdir():
+    if f.name.endswith(".pdf"):
+        test_files[f.name] = io.BytesIO(f.read_bytes())
 
 
 def get_file(name):
