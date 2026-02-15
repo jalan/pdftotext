@@ -56,16 +56,6 @@ sudo yum install gcc-c++ pkgconfig poppler-cpp-devel python3-devel
 brew install pkg-config poppler python
 ```
 
-### Windows
-
-Currently tested only when using conda:
-
- - Install the Microsoft Visual C++ Build Tools
- - Install poppler through conda:
-   ```
-   conda install -c conda-forge poppler
-   ```
-
 
 ## Install
 

@@ -1,7 +1,6 @@
 import os
 import platform
 import subprocess
-import sys
 from setuptools import Extension
 from setuptools import setup
 
@@ -47,13 +46,6 @@ if platform.system() in ["Darwin", "FreeBSD", "OpenBSD"]:
     include_dirs = ["/usr/local/include"]
     library_dirs = ["/usr/local/lib"]
 
-# On Windows, only building with conda is tested so far
-if platform.system() == "Windows":
-    conda_prefix = os.getenv("CONDA_PREFIX")
-    if conda_prefix is not None:
-        include_dirs = [os.path.join(conda_prefix, r"Library\include")]
-        library_dirs = [os.path.join(conda_prefix, r"Library\lib")]
-
 extra_compile_args = ["-Wall"]
 extra_link_args = []
 
@@ -84,7 +76,7 @@ module = Extension(
     extra_link_args=extra_link_args,
 )
 
-with open("README.md", "r") as f:
+with open("README.md") as f:
     long_description = f.read()
 
 setup(
