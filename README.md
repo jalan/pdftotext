@@ -1,8 +1,9 @@
-# pdftotext
+Moved to https://sr.ht/~jalan/pdftotext/
 
-[![PyPI](https://img.shields.io/pypi/v/pdftotext.svg)](https://pypi.python.org/pypi/pdftotext)
-[![Tests](https://github.com/jalan/pdftotext/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/jalan/pdftotext/actions)
-[![Downloads](https://pepy.tech/badge/pdftotext)](https://pepy.tech/project/pdftotext)
+
+<s>
+
+# pdftotext
 
 Simple PDF text extraction
 
@@ -62,3 +63,5 @@ brew install pkg-config poppler python
 ```
 pip install pdftotext
 ```
+
+</s>
